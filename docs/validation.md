@@ -76,6 +76,15 @@ When the launcher window closed on startup, the local Ollama service was reachab
 
 All five new launcher tests failed before the changes and passed afterward. The fresh 0.1.1 ZIP passed all 22 Node tests and the Lua suite. Two builds produced the same SHA-256 `F5BF26ADB9B5E78252903714298C8904243BD7E07FF61CC6BB7DA1F9D4EAFF8D`, and the included Signal Run save rebuilt to the same SHA-256 as 0.1.0. A hidden Windows console using the packaged launcher and a simulated model failure showed 16 animation frames, kept the error visible until Enter and returned the original nonzero exit code.
 
+## Automatic local model startup 0.1.2
+
+Ollama listed the exact Qwen3 tag, and the earlier launcher request ended after two minutes while the runner was starting. With the new 2,048-token context, the installed model passed the startup probe in 37.5 seconds and chose the expected action on a second sample turn. A separate check isolated LM Studio and verified that it loaded the installed Qwen3 4B and passed the startup probe in 9.3 seconds. The check released its LM Studio instance and confirmed the other loaded model stayed in place.
+
+The new selector tests first failed because automatic discovery was missing. They then passed for model filtering, a failed Ollama startup followed by LM Studio, an active Unsloth model, reduced context on normal turns, and approved, declined and noninteractive download paths. The fresh 0.1.2 ZIP passed all 28 Node tests and the Lua suite. The actual batch file also passed isolated Windows smoke checks for baseline, a pinned Ollama model, redirected startup, declining with Enter and approving with y. The download was simulated. The local Unsloth Studio API was unavailable during live validation. These checks exercised model inference without opening or moving the game table.
+
+Two builds produced the same archive SHA-256 `987D1148B4E57FF58F2C7A85EA0E5237B4699AA7ADD0D003F3BCF0E997238C7B`. The included save rebuilt to the existing Signal Run checksum.
+
+
 ## Outstanding gates
 
 - Ask independent testers whether they would play again.

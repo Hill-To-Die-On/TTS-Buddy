@@ -76,6 +76,7 @@ async function generateOllama(baseUrl, timeoutMs, body) {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     signal: AbortSignal.timeout(timeoutMs),
+    redirect: 'error',
     body: JSON.stringify({ ...body, stream: false }),
   });
   if (!response.ok) throw Object.assign(Error('Local model unavailable'), { status: response.status });
@@ -88,8 +89,7 @@ export async function preloadOllama({ model, timeoutMs = 120000, baseUrl = 'http
   if (result?.done !== true) throw Error('Local model unavailable');
 }
 
-export async function chooseOllama(snapshot, { model, timeoutMs = 30000, baseUrl = 'http://127.0.0.1:11434' } = {}) {
-  if (!model) throw Error('Choose a local Ollama model');
+function modelTurn(snapshot) {
   if (snapshot.legalActions.length < 1 || snapshot.legalActions.length > 26) throw Error('Invalid table snapshot');
 
   const options = snapshot.legalActions.map((actionId, index) => {
@@ -103,11 +103,50 @@ export async function chooseOllama(snapshot, { model, timeoutMs = 30000, baseUrl
     `${option.letter}: ${option.card} -> Buddy ${option.buddy}, Human ${option.human}${option.buddy >= 7 ? ' (Buddy wins)' : ''}`
   ).join('\n');
   const prompt = `You are Buddy in Signal Run. First to 7 points wins. Choose the best legal action; take an immediate win. Jam reduces the human score by 1, minimum zero. Current score: Buddy ${snapshot.scores.buddy}, Human ${snapshot.scores.human}. Results after each legal play:\n${lines}\nReturn JSON with choice equal to one letter.`;
+  const schema = {
+    type: 'object',
+    properties: { choice: { type: 'string', enum: options.map(option => option.letter) } },
+    required: ['choice'],
+    additionalProperties: false,
+  };
+  return { prompt, schema };
+}
+
+export async function chooseOllama(snapshot, {
+  model, timeoutMs = 30000, baseUrl = 'http://127.0.0.1:11434', contextLength,
+} = {}) {
+  if (!model) throw Error('Choose a local Ollama model');
+  const { prompt, schema } = modelTurn(snapshot);
   const data = await generateOllama(baseUrl, timeoutMs, {
     model,
-    format: { type: 'object', properties: { choice: { type: 'string', enum: options.map(option => option.letter) } }, required: ['choice'], additionalProperties: false },
-    options: { temperature: 0, num_predict: 40 },
+    format: schema,
+    options: { temperature: 0, num_predict: 40, ...(contextLength && { num_ctx: contextLength }) },
+    ...(contextLength && { think: false }),
     prompt,
   });
   return parseModelChoice(data.response, snapshot);
+}
+
+export async function chooseChatModel(snapshot, { model, baseUrl, key, timeoutMs = 30000, structured }) {
+  const { prompt, schema } = modelTurn(snapshot);
+  const response = await fetch(baseUrl + '/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      ...(key && { authorization: 'Bearer ' + key }),
+    },
+    signal: AbortSignal.timeout(timeoutMs),
+    redirect: 'error',
+    body: JSON.stringify({
+      model,
+      messages: [{ role: 'user', content: prompt + '\nUse the exact format {"choice":"<letter>"}, replacing <letter> with your chosen option.' }],
+      temperature: 0,
+      max_tokens: 96,
+      stream: false,
+      ...(structured && { response_format: { type: 'json_schema', json_schema: { name: 'signal_run_turn', strict: true, schema } } }),
+    }),
+  });
+  if (!response.ok) throw Object.assign(Error('Local model unavailable'), { status: response.status });
+  const data = await response.json();
+  return parseModelChoice(data.choices?.[0]?.message?.content, snapshot);
 }

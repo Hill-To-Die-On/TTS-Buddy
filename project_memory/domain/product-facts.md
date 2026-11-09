@@ -4,13 +4,13 @@
 
 ## What It Does
 
-TTS Buddy 0.1.1 is a personal-use Windows MVP for Tabletop Simulator. Its Signal Run implementation connects to a local table, presents seat-specific legal moves, plays Buddy turns and records public turn history. The private ZIP includes the Windows launcher, prebuilt save and first-run guide. The 0.1.0 live evidence covers five consecutive model matches using scripted White-seat moves. The 0.1.1 update improves launcher feedback and startup diagnostics. A personal playthrough, independent feedback and external pilot acceptance remain open.
+TTS Buddy 0.1.2 is a personal-use Windows MVP for Tabletop Simulator. Its Signal Run implementation connects to a local table, presents seat-specific legal moves, plays Buddy turns and records public turn history. The private ZIP includes the Windows launcher, prebuilt save and first-run guide. The 0.1.0 live evidence covers five consecutive model matches using scripted White-seat moves. Version 0.1.2 adds automatic local model selection and an optional download. A personal playthrough, independent feedback and external pilot acceptance remain open.
 
 ## Planned MVP Limits
 
 One human and one AI opponent, one supported two-player game save and one local Windows TTS session. The selected original game is Signal Run. Live tests used a locally imported Qwen3 4B model on the development PC and the official Ollama tag on CPU in the Windows test VM. The VM runs Tabletop Simulator with software rendering. The [validation record](../../docs/validation.md) tracks the guest results and remaining pilot checks.
 
-The Windows launcher defaults to `qwen3:4b-instruct-2507-q4_K_M` on the local Ollama server. It displays a moving bar while preloading the model and keeps an interactive terminal open when startup fails. The launcher honours the model and server environment settings. Baseline mode uses the deterministic player and skips Ollama.
+The Windows launcher checks running local model servers. It tries `qwen3:4b-instruct-2507-q4_K_M` in Ollama first if installed, then considers suitable local models from Ollama and LM Studio and an active text model from Unsloth Studio. Each candidate must make the winning move on a sample Signal Run turn before it can play a match. Buddy requests a 2,048-token context for automatically selected Ollama models and for LM Studio models it loads. If the local Ollama server is available and no candidate succeeds, Buddy can offer to download a suggested missing model. It requires an explicit yes in an interactive console. The launcher shows progress during checks and keeps startup errors visible. An explicit Ollama model or server setting pins that configuration. Baseline mode uses the deterministic player and skips model setup.
 
 ## Decisions
 
