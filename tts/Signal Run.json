@@ -1,0 +1,409 @@
+{
+  "SaveName": "Signal Run",
+  "EpochTime": 0,
+  "Date": "",
+  "VersionNumber": "v14.2.2",
+  "GameMode": "None",
+  "GameType": "",
+  "GameComplexity": "",
+  "Tags": [],
+  "Gravity": 0.5,
+  "PlayArea": 0.5,
+  "Table": "Table_Square",
+  "Sky": "Sky_Field",
+  "Note": "",
+  "TabStates": {
+    "0": {
+      "title": "Rules",
+      "body": "",
+      "color": "Grey",
+      "visibleColor": {
+        "r": 0.5,
+        "g": 0.5,
+        "b": 0.5
+      },
+      "id": 0
+    },
+    "1": {
+      "title": "White",
+      "body": "",
+      "color": "White",
+      "visibleColor": {
+        "r": 1,
+        "g": 1,
+        "b": 1
+      },
+      "id": 1
+    },
+    "2": {
+      "title": "Brown",
+      "body": "",
+      "color": "Brown",
+      "visibleColor": {
+        "r": 0.443,
+        "g": 0.231,
+        "b": 0.09
+      },
+      "id": 2
+    },
+    "3": {
+      "title": "Red",
+      "body": "",
+      "color": "Red",
+      "visibleColor": {
+        "r": 0.856,
+        "g": 0.1,
+        "b": 0.094
+      },
+      "id": 3
+    },
+    "4": {
+      "title": "Orange",
+      "body": "",
+      "color": "Orange",
+      "visibleColor": {
+        "r": 0.956,
+        "g": 0.392,
+        "b": 0.113
+      },
+      "id": 4
+    },
+    "5": {
+      "title": "Yellow",
+      "body": "",
+      "color": "Yellow",
+      "visibleColor": {
+        "r": 0.905,
+        "g": 0.898,
+        "b": 0.172
+      },
+      "id": 5
+    },
+    "6": {
+      "title": "Green",
+      "body": "",
+      "color": "Green",
+      "visibleColor": {
+        "r": 0.192,
+        "g": 0.701,
+        "b": 0.168
+      },
+      "id": 6
+    },
+    "7": {
+      "title": "Blue",
+      "body": "",
+      "color": "Blue",
+      "visibleColor": {
+        "r": 0.118,
+        "g": 0.53,
+        "b": 1
+      },
+      "id": 7
+    },
+    "8": {
+      "title": "Teal",
+      "body": "",
+      "color": "Teal",
+      "visibleColor": {
+        "r": 0.129,
+        "g": 0.694,
+        "b": 0.607
+      },
+      "id": 8
+    },
+    "9": {
+      "title": "Purple",
+      "body": "",
+      "color": "Purple",
+      "visibleColor": {
+        "r": 0.627,
+        "g": 0.125,
+        "b": 0.941
+      },
+      "id": 9
+    },
+    "10": {
+      "title": "Pink",
+      "body": "",
+      "color": "Pink",
+      "visibleColor": {
+        "r": 0.96,
+        "g": 0.439,
+        "b": 0.807
+      },
+      "id": 10
+    },
+    "11": {
+      "title": "Black",
+      "body": "",
+      "color": "Black",
+      "visibleColor": {
+        "r": 0.25,
+        "g": 0.25,
+        "b": 0.25
+      },
+      "id": 11
+    }
+  },
+  "Grid": {
+    "Type": 0,
+    "Lines": false,
+    "Color": {
+      "r": 0,
+      "g": 0,
+      "b": 0
+    },
+    "Opacity": 0.75,
+    "ThickLines": false,
+    "Snapping": false,
+    "Offset": false,
+    "BothSnapping": false,
+    "xSize": 2,
+    "ySize": 2,
+    "PosOffset": {
+      "x": 0,
+      "y": 1,
+      "z": 0
+    }
+  },
+  "Lighting": {
+    "LightIntensity": 0.54,
+    "LightColor": {
+      "r": 1,
+      "g": 0.9804,
+      "b": 0.8902
+    },
+    "AmbientIntensity": 1.3,
+    "AmbientType": 0,
+    "AmbientSkyColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "AmbientEquatorColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "AmbientGroundColor": {
+      "r": 0.5,
+      "g": 0.5,
+      "b": 0.5
+    },
+    "ReflectionIntensity": 1,
+    "LutIndex": 0,
+    "LutContribution": 1
+  },
+  "Hands": {
+    "Enable": true,
+    "DisableUnused": false,
+    "Hiding": 0
+  },
+  "ComponentTags": {
+    "labels": []
+  },
+  "Turns": {
+    "Enable": false,
+    "Type": 0,
+    "TurnOrder": [],
+    "Reverse": false,
+    "SkipEmpty": false,
+    "DisableInteractions": false,
+    "PassTurns": true
+  },
+  "DecalPallet": [],
+  "LuaScript": "Rules = {}\r\nlocal function other(seat) return seat == 'human' and 'buddy' or 'human' end\r\nlocal function draw(s,seat) if #s.deck > 0 then table.insert(s.hands[seat],table.remove(s.deck)) end end\r\nlocal function begin(s,seat)\r\n  s.active=seat\r\n  draw(s,seat)\r\n  if #s.hands[seat] == 0 then\r\n    local nextSeat=other(seat)\r\n    if #s.hands[nextSeat] == 0 and #s.deck == 0 then\r\n      s.phase='finished'\r\n      if s.scores.human == s.scores.buddy then s.winner='draw' elseif s.scores.human > s.scores.buddy then s.winner='human' else s.winner='buddy' end\r\n    else s.active=nextSeat; draw(s,nextSeat) end\r\n  end\r\nend\r\nfunction Rules.new(deck,matchId)\r\n  local s={matchId=matchId,revision=1,phase='playing',active='human',scores={human=0,buddy=0},hands={human={},buddy={}},deck=deck,lastAction=nil}\r\n  for i=1,2 do draw(s,'human'); draw(s,'buddy') end\r\n  begin(s,'human')\r\n  return s\r\nend\r\nfunction Rules.play(s,seat,slot)\r\n  if s.phase ~= 'playing' or s.active ~= seat or type(slot) ~= 'number' or slot ~= math.floor(slot) or not s.hands[seat][slot] then return false end\r\n  local card=table.remove(s.hands[seat],slot)\r\n  local effect=''\r\n  if card == 'Charge' then s.scores[seat]=s.scores[seat]+1\r\n  elseif card == 'Boost' then s.scores[seat]=s.scores[seat]+2\r\n  elseif card == 'Jam' then s.scores[seat]=s.scores[seat]+1; local target=other(seat); s.scores[target]=math.max(0,s.scores[target]-1); effect=(target=='human' and 'Human' or 'Buddy')..' loses 1 point (minimum zero).'\r\n  else error('Unknown card') end\r\n  s.lastAction={seat=seat,card=card,effect=effect}; s.revision=s.revision+1\r\n  if s.scores[seat] >= 7 then s.phase='finished'; s.winner=seat else begin(s,other(seat)) end\r\n  return true\r\nend\r\n-- Preview uses the same rule transition on a copy and returns only public scores.\r\nfunction Rules.preview(s,seat,slot)\r\n  local copy={matchId=s.matchId,revision=s.revision,phase=s.phase,active=s.active,scores={human=s.scores.human,buddy=s.scores.buddy},hands={human={},buddy={}},deck={}}\r\n  for _,name in ipairs({'human','buddy'}) do for i,card in ipairs(s.hands[name]) do copy.hands[name][i]=card end end\r\n  for i,card in ipairs(s.deck) do copy.deck[i]=card end\r\n  if not Rules.play(copy,seat,slot) then return nil end\r\n  return {scores=copy.scores}\r\nend\r\n\n-- Public, non-authoritative visual markers. The rules remain in Rules/state.\r\nPresentation={}\r\nlocal pending={}\r\nlocal labels={}\r\nfunction presentationNoop() end\r\nlocal function put(tag,name,position,color,label)\r\n  labels[tag]=label\r\n  local existing=getObjectsWithTag(tag)\r\n  if #existing>0 then\r\n    existing[1].editButton({index=0,label=label})\r\n  elseif not pending[tag] then\r\n    pending[tag]=true\r\n    spawnObject({type='BlockSquare',position=position,scale={1.8,0.15,2.5},callback_function=function(obj)\r\n      obj.addTag(tag); obj.setName(name); obj.setLock(true); obj.setColorTint(color)\r\n      obj.createButton({click_function='presentationNoop',function_owner=Global,label=labels[tag],position={0,0.55,0},rotation={0,180,0},width=0,height=0,font_size=230,font_color={1,1,1}})\r\n      pending[tag]=nil\r\n    end})\r\n  end\r\nend\r\nfunction Presentation.update(s)\r\n  if not s then return end\r\n  local last=s.lastAction and (string.upper(s.lastAction.seat)..'\\n'..s.lastAction.card) or 'LAST\\n—'\r\n  put('tts-buddy-deck','Signal Run draw pile (display only)',{-3,1,5},{0.12,0.24,0.43},'DECK\\n'..#s.deck)\r\n  put('tts-buddy-last','Signal Run last played card (display only)',{3,1,5},{0.35,0.16,0.22},last)\r\nend\r\n\nlocal state=nil\r\nlocal mode='paused'\r\nlocal receipts={}\r\nlocal function shuffle(deck) for i=#deck,2,-1 do local j=math.random(i); deck[i],deck[j]=deck[j],deck[i] end end\r\nlocal function snapshot()\r\n  local hand,legal,previews={},{},{}\r\n  if state then\r\n    for i,card in ipairs(state.hands.buddy) do hand[#hand+1]={slot=i,card=card}; if state.phase=='playing' and state.active=='buddy' and mode=='running' then local id=state.revision..':'..i; legal[#legal+1]=id; local preview=Rules.preview(state,'buddy',i); previews[#previews+1]={actionId=id,human=preview.scores.human,buddy=preview.scores.buddy} end end\r\n    return {protocol=1,matchId=state.matchId,revision=state.revision,phase=state.phase,activeSeat=state.active,scores=state.scores,hand=hand,legalActions=legal,previews=previews,status=state.phase=='finished' and 'complete' or mode,lastAction=state.lastAction,winner=state.winner}\r\n  end\r\n  return {protocol=1,matchId='',revision=0,phase='setup',activeSeat='human',scores={human=0,buddy=0},hand={},legalActions={},previews={},status='paused'}\r\nend\r\nlocal function render()\r\n  local heading='Signal Run — start a new match'\r\n  local hand=''\r\n  local last=''\r\n  if state then\r\n    heading='Human '..state.scores.human..' — Buddy '..state.scores.buddy..' | Deck '..#state.deck..' | '..(state.phase=='finished' and ('Winner: '..state.winner) or ('Turn: '..state.active..' | '..mode))\r\n    if state.lastAction then last=state.lastAction.seat..' played '..state.lastAction.card..'. '..state.lastAction.effect end\r\n    local seat=(mode=='manual' and state.active=='buddy') and 'buddy' or 'human'\r\n    for i,card in ipairs(state.hands[seat]) do hand=hand..'<Button onClick=\"playHuman\" id=\"'..i..'\" text=\"'..card..'\" width=\"100\" height=\"38\" />' end\r\n  end\r\n  local xml='<Panel width=\"900\" height=\"230\" position=\"0 0 -20\" color=\"#172536EE\"><VerticalLayout padding=\"10\" spacing=\"5\"><Text text=\"'..heading..'\" fontSize=\"20\" color=\"#FFFFFF\"/><Text text=\"'..last..'\" fontSize=\"16\" color=\"#FFFFFF\"/><HorizontalLayout preferredHeight=\"40\"><Button onClick=\"newGame\" text=\"New match\"/><Button onClick=\"pauseGame\" text=\"Pause\"/><Button onClick=\"resumeGame\" text=\"Resume\"/><Button onClick=\"takeOver\" text=\"Take over\"/><Button onClick=\"releaseBuddy\" text=\"Release Buddy\"/></HorizontalLayout><Text text=\"White seat: your hand (or Buddy hand during takeover)\" visibility=\"White\" color=\"#FFFFFF\"/><HorizontalLayout visibility=\"White\" preferredHeight=\"40\">'..hand..'</HorizontalLayout></VerticalLayout></Panel>'\r\n  pcall(Presentation.update,state)\r\n  UI.setXml(xml)\r\nend\r\nfunction onLoad(saved)\r\n  if saved and saved ~= '' then local ok,data=pcall(JSON.decode,saved); if ok and type(data)=='table' then state=data.state; mode='paused'; receipts=data.receipts or {} end end\r\n  render()\r\nend\r\nfunction onSave() return JSON.encode({state=state,mode=mode,receipts=receipts}) end\r\nlocal function authorized(player) return player and player.color=='White' end\r\nfunction newGame(player)\r\n  if not authorized(player) then return end\r\n  local deck={}; for i=1,8 do deck[#deck+1]='Charge' end; for i=1,6 do deck[#deck+1]='Boost' end; for i=1,4 do deck[#deck+1]='Jam' end; shuffle(deck)\r\n  state=Rules.new(deck,tostring(os.time())..'-'..tostring(math.random(100000,999999))); receipts={}; mode='running'; render()\r\nend\r\nlocal function setMode(player,value) if authorized(player) and state then mode=value; state.revision=state.revision+1; render() end end\r\nfunction pauseGame(player) setMode(player,'paused') end\r\nfunction resumeGame(player) setMode(player,'running') end\r\nfunction takeOver(player) setMode(player,'manual') end\r\nfunction releaseBuddy(player) setMode(player,'running') end\r\nfunction playHuman(player,value,id)\r\n  if not authorized(player) or not state then return end\r\n  local seat=(mode=='manual' and state.active=='buddy') and 'buddy' or 'human'\r\n  if (seat=='human' and mode=='running') or (seat=='buddy' and mode=='manual') then Rules.play(state,seat,tonumber(id)); render() end\r\nend\r\nfunction onExternalMessage(m)\r\n  if type(m)~='table' or m.protocol~=1 or type(m.requestId)~='string' or #m.requestId>100 then return end\r\n  -- TTS 14.2.2 silently drops callbacks containing nested tables.\r\n  if m.type=='inspect' then sendExternalMessage({requestId=m.requestId,snapshotJson=JSON.encode(snapshot())}); return end\r\n  if m.type~='play' then return end\r\n  local cached=receipts[m.requestId]; if cached then sendExternalMessage(cached); return end\r\n  local result={requestId=m.requestId,result='rejected',reason='Action unavailable',revision=state and state.revision or 0}\r\n  if state and mode=='running' and state.phase=='playing' and state.active=='buddy' and m.matchId==state.matchId and m.revision==state.revision and type(m.actionId)=='string' then\r\n    local revision,slot=string.match(m.actionId,'^(%d+):(%d+)$')\r\n    if tonumber(revision)==state.revision and Rules.play(state,'buddy',tonumber(slot)) then result.result='applied'; result.reason=nil; result.revision=state.revision; render() end\r\n  end\r\n  receipts[m.requestId]=result; sendExternalMessage(result)\r\nend\r\n",
+  "LuaScriptState": "",
+  "ObjectStates": [
+    {
+      "GUID": "0e48cd",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": 14.3801212,
+        "posY": 2.97108841,
+        "posZ": 0.141296387,
+        "rotX": 0,
+        "rotY": 270,
+        "rotZ": 0,
+        "scaleX": 9.39275,
+        "scaleY": 6.6338706,
+        "scaleZ": 3.52228069
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 0.627,
+        "g": 0.124999978,
+        "b": 0.941,
+        "a": 0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "Purple",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "0cdf5c",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": 0.03270387,
+        "posY": 2.97108459,
+        "posZ": -14.3704987,
+        "rotX": 0,
+        "rotY": 0,
+        "rotZ": 0,
+        "scaleX": 9.392744,
+        "scaleY": 6.633872,
+        "scaleZ": 3.5222795
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 1,
+        "g": 1,
+        "b": 1,
+        "a": 0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "White",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "ff9e1a",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": 0.03270387,
+        "posY": 2.97108841,
+        "posZ": 14.2773781,
+        "rotX": 0,
+        "rotY": 180,
+        "rotZ": 0,
+        "scaleX": 9.392749,
+        "scaleY": 6.6338706,
+        "scaleZ": 3.52228117
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 0.191999972,
+        "g": 0.701,
+        "b": 0.167999953,
+        "a": 0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "Green",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    },
+    {
+      "GUID": "188331",
+      "Name": "HandTrigger",
+      "Transform": {
+        "posX": -14.29123,
+        "posY": 2.97108841,
+        "posZ": -0.05830002,
+        "rotX": 0,
+        "rotY": 90,
+        "rotZ": 0,
+        "scaleX": 9.39275,
+        "scaleY": 6.6338706,
+        "scaleZ": 3.52228069
+      },
+      "Nickname": "",
+      "Description": "",
+      "GMNotes": "",
+      "AltLookAngle": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "ColorDiffuse": {
+        "r": 0.9559999,
+        "g": 0.39199996,
+        "b": 0.112999953,
+        "a": 0
+      },
+      "LayoutGroupSortIndex": 0,
+      "Value": 0,
+      "Locked": true,
+      "Grid": false,
+      "Snap": true,
+      "IgnoreFoW": false,
+      "MeasureMovement": false,
+      "DragSelectable": true,
+      "Autoraise": true,
+      "Sticky": true,
+      "Tooltip": true,
+      "GridProjection": false,
+      "HideWhenFaceDown": false,
+      "Hands": false,
+      "FogColor": "Orange",
+      "LuaScript": "",
+      "LuaScriptState": "",
+      "XmlUI": ""
+    }
+  ],
+  "XmlUI": ""
+}

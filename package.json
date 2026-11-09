@@ -1,0 +1,16 @@
+{
+  "name": "tts-buddy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test && node src/run-lua.js",
+    "build": "node src/build-table.js"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "devDependencies": {
+    "fengari-node-cli": "0.1.0"
+  }
+}
