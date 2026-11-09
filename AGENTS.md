@@ -45,3 +45,7 @@ repository, whichever tool it runs in.
 - Never write secrets, credentials or personal data into Project Memory.
 
 <!-- atlasmind:memory-ssot:end -->
+
+## Test-driven development
+
+Use red/green test-driven development wherever practical. First write a test for the expected behaviour and watch it fail for the intended reason. Make the smallest change that passes it, then run the broader suite. When a check requires the live game or manual verification, record what was checked and why an automated test was impractical.

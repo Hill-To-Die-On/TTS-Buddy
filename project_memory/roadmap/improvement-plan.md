@@ -36,7 +36,7 @@ Working estimate for one developer is **10–18 focused development days**, with
 | M2 · Replace test decisions with a model | 4–7 days | Buddy finishes full matches with model-driven moves. Test pause, manual takeover and recovery after a forced interruption. Retain the deterministic player for comparison and debugging. |
 | M3 · Package and playtest | 2–4 days | Produce a repeatable Windows build, demo save and quick start. Complete the playtest gates below and tag a local pilot build. Review distribution terms before making a build or save public. |
 
-M0 evidence, including the desktop experiment and bridge reuse decision, is recorded in [docs/m0-evidence.md](../../docs/m0-evidence.md). Live baseline and model matches, recovery checks, and two setup timings are recorded in [docs/validation.md](../../docs/validation.md). Independent player feedback, distribution review and the local pilot tag remain open.
+M0 evidence, including the desktop experiment and bridge reuse decision, is recorded in [docs/m0-evidence.md](../../docs/m0-evidence.md). Live baseline and model matches, recovery checks, and two setup timings are recorded in [docs/validation.md](../../docs/validation.md). M3 is in progress; the [pilot brief](../../docs/pilot.md) sets out the independent playtest and initial distribution review. Independent player feedback, distribution review and the local pilot tag remain open.
 
 ### MVP backlog
 
@@ -65,4 +65,4 @@ These thresholds are initial targets for the local pilot.
 
 - **Next.** Add a second game adapter to test reuse. Try verified rulebook lookup, session save/resume across TTS restarts, richer explanations and a cooperative scenario.
 - **Later.** Add voice, campaign memory and spoiler controls for **ISS Vanguard**, tactical movement and line of sight for **Imperial Assault**, then negotiation, several AI factions and separate player memories for **Twilight Imperium**.
-- **Separate decisions.** Evaluate a VM and separate Steam client only if an independent player seat becomes a requirement. Treat online automation, third-party assets and monetisation as separate permission and distribution reviews. TTS's published EULA addresses mod distribution and unauthorised automation in online features. [Tabletop Simulator EULA](https://store.steampowered.com/eula/286160_eula_0)
+- **Separate decisions.** Evaluate a separate Steam client if an independent player seat becomes a requirement. Treat online automation, third-party assets and monetisation as separate permission and distribution reviews. TTS's published EULA addresses mod distribution and unauthorised automation in online features. [Tabletop Simulator EULA](https://store.steampowered.com/eula/286160_eula_0)

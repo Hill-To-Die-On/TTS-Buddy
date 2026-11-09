@@ -14,11 +14,18 @@
 
 The save used for live playtesting had SHA-256 `86D66505986EBF46DB5456B1798155DF78782198A6871E719533BCB346301C34`. It was loaded from a fresh slot 23; the physical markers were readable from White above the overlay. One setup, timed after prerequisites, reached the first model turn in 54.1 seconds. Five consecutive live matches used scripted White-seat actions against the real TTS table, production bridge/session and local Ollama model. Human–Buddy scores were 6–7, 7–6, 5–7, 4–7 and 8–5. Scores and revisions were independently asserted; no illegal or duplicate moves or manual repairs occurred. Across 28 model turns, median time was 1.8545 seconds and slowest 3.752 seconds, including a one-second polling allowance. The earlier model match was played with the human seat through the in-game buttons.
 
-The committed save has SHA-256 `556F93B9020C5C97351AF23F676854B381ED999BD1DDB64175E5179A9F65E193`. It differs from the live-tested save only by one trailing whitespace character in the embedded Lua. The rebuilt save passed the automated suite.
+The save committed at `c0f2eaecbd0673266a1aa9a30c06eadc6ffa4e7c` has SHA-256 `556F93B9020C5C97351AF23F676854B381ED999BD1DDB64175E5179A9F65E193`. It differs from the live-tested save only by one trailing whitespace character in the embedded Lua. The rebuilt save passed the automated suite at that stage.
 
 Live recovery checks covered a forced Ollama timeout, stale decision after table pause/resume during model choice, manual takeover/release, a lost applied acknowledgement followed by resynchronisation and duplicate-request ID, and a guessed action ID. After Node runtime formatting, a fresh Buddy process attached to the existing Human 1–Buddy 2 table without replay; a newly launched CLI later completed the pending model turn at Human 3–Buddy 2 to make it 3–3. Actual JSONL records contained only the expected public fields. A clean runtime copy without node_modules rebuilt the identical save, installed a fresh slot 24, loaded in TTS and played its first model move in 77.0 seconds from copy/build start. Human tester feedback and distribution review are still outstanding. These tests do not establish an independent human tester's willingness to play again.
+
+## M3 packaging findings
+
+Windows Git archive exports exposed CRLF in the outer save and source-dependent line endings in embedded Lua. The builder now normalizes CRLF and `.gitattributes` pins table files to LF. Exports with LF and CRLF inputs reproduced the same save SHA-256 `550D8A7F8F9AFD8F55FC5D60FB80F84DD673F94EDEAABD472B55F54F26F03292`. A check using `git archive --worktree-attributes` verified the attributes. Embedded Lua matched after newline normalization and non-script JSON fields were identical.
+
+The build regression test failed against the M2 builder with a line-ending mismatch and passed against the M3 fix. The full `npm test` suite passed all 15 Node tests and the Lua suites, including 20 seeded rules-only matches. The normalized artifact still needs a live run. The final pilot revision remains to be selected.
 
 ## Outstanding gates
 
 - Ask independent testers whether they would play again.
+- Run the normalized release save live and verify the selected revision and fresh-machine package. Use a dedicated Windows VM or spare PC for foreground play. Guest 3D support and the full VM setup remain unproven. Once loaded, the local bridge baseline can run without foreground desktop interaction.
 - Review distribution terms. Do not tag a pilot or make it public until its gates pass.
