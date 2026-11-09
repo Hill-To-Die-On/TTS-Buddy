@@ -78,7 +78,7 @@ async function generateOllama(baseUrl, timeoutMs, body) {
     signal: AbortSignal.timeout(timeoutMs),
     body: JSON.stringify({ ...body, stream: false }),
   });
-  if (!response.ok) throw Error('Local model unavailable');
+  if (!response.ok) throw Object.assign(Error('Local model unavailable'), { status: response.status });
   return response.json();
 }
 

@@ -1,6 +1,6 @@
 # TTS Buddy MVP plan and roadmap
 
-Personal-use Windows MVP 0.1.0 · 9 November 2026
+Personal-use Windows MVP 0.1.1 · 9 November 2026
 
 [Detailed implementation plan](mvp-implementation-plan.md)
 
@@ -39,7 +39,7 @@ Working estimate for one developer is **10–18 focused development days**, with
 
 M0 evidence, including the desktop experiment and bridge reuse decision, is recorded in [docs/m0-evidence.md](../../docs/m0-evidence.md). [Validation](../../docs/validation.md) records the live model batch, recovery checks and two timed setups from the exact M3 candidate ZIP. The [pilot brief](../../docs/pilot.md) covers the remaining distribution clarification and independent playtest. The pilot tag follows acceptance of those checks.
 
-The private 0.1.0 ZIP contains the exact runtime and save that finished a scripted local Singleplayer match. Package reproducibility, fresh-extract tests and the VM observations are in [validation](../../docs/validation.md). A personal playthrough remains the usability check for the player experience.
+The private 0.1.0 ZIP contains the exact runtime and save that finished a scripted local Singleplayer match. The 0.1.1 launcher update adds model-loading progress and keeps startup errors visible. Package reproducibility, fresh-extract tests and the VM observations are in [validation](../../docs/validation.md). A personal playthrough remains the usability check for the player experience.
 
 ### MVP backlog
 

@@ -4,13 +4,13 @@
 
 ## What It Does
 
-TTS Buddy 0.1.0 is a personal-use Windows MVP for Tabletop Simulator. Its Signal Run implementation connects to a local table, presents seat-specific legal moves, plays Buddy turns and records public turn history. The private ZIP includes the Windows launcher, prebuilt save and first-run guide. Five consecutive final-save model matches used scripted White-seat moves, and a complete live match verified the exact runtime in the ZIP. A personal playthrough, independent feedback and external pilot acceptance remain open.
+TTS Buddy 0.1.1 is a personal-use Windows MVP for Tabletop Simulator. Its Signal Run implementation connects to a local table, presents seat-specific legal moves, plays Buddy turns and records public turn history. The private ZIP includes the Windows launcher, prebuilt save and first-run guide. The 0.1.0 live evidence covers five consecutive model matches using scripted White-seat moves. The 0.1.1 update improves launcher feedback and startup diagnostics. A personal playthrough, independent feedback and external pilot acceptance remain open.
 
 ## Planned MVP Limits
 
 One human and one AI opponent, one supported two-player game save and one local Windows TTS session. The selected original game is Signal Run. Live tests used a locally imported Qwen3 4B model on the development PC and the official Ollama tag on CPU in the Windows test VM. The VM runs Tabletop Simulator with software rendering. The [validation record](../../docs/validation.md) tracks the guest results and remaining pilot checks.
 
-The Windows launcher defaults to `qwen3:4b-instruct-2507-q4_K_M` on the local Ollama server. It waits for a successful model preload before taking turns. The launcher honours the model and server environment settings. Baseline mode uses the deterministic player and skips Ollama.
+The Windows launcher defaults to `qwen3:4b-instruct-2507-q4_K_M` on the local Ollama server. It displays a moving bar while preloading the model and keeps an interactive terminal open when startup fails. The launcher honours the model and server environment settings. Baseline mode uses the deterministic player and skips Ollama.
 
 ## Decisions
 

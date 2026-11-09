@@ -18,7 +18,7 @@ If you have the personal-use MVP ZIP, start with its `START HERE.txt` and use th
 
 1. Open Signal Run in **Singleplayer** and sit at **White**.
 2. Start Ollama. The first time, install the model with `ollama pull qwen3:4b-instruct-2507-q4_K_M` in PowerShell.
-3. Open [start-buddy.cmd](../start-buddy.cmd) from File Explorer, or run `./start-buddy.cmd` in PowerShell from the project folder. Wait for **Buddy started**. The launcher gives the model up to two minutes to load before Buddy starts taking turns. [Ollama's model preload documentation](https://docs.ollama.com/faq#how-can-i-preload-a-model-into-ollama-to-get-faster-response-times)
+3. Open [start-buddy.cmd](../start-buddy.cmd) from File Explorer, or run `./start-buddy.cmd` in PowerShell from the project folder. A moving bar shows that the model is loading. Wait for **Buddy started**. The model can take up to two minutes to load. [Ollama's model preload documentation](https://docs.ollama.com/faq#how-can-i-preload-a-model-into-ollama-to-get-faster-response-times)
 4. Click **New match**, then play a card from the White hand. The table displays the scores, deck count and last public card. See [the Signal Run rules](signal-run.md).
 
 ## Alternate model or baseline
@@ -41,7 +41,7 @@ Buddy stores public turn history in `tts-buddy-history.jsonl` in this folder. Co
 
 ## Checks and troubleshooting
 
-If the launcher window closes at startup, run it from an open PowerShell window to see the error. Check that Ollama is running and that `ollama list` shows the requested model. If port 39998 is busy, close the other editor or Buddy process and restart. If Buddy cannot connect, confirm that the Signal Run table is open in Singleplayer.
+The launcher keeps an interactive terminal open if startup fails. Read the error before pressing Enter to close it. Check that the ZIP was fully extracted, that Ollama is running and that `ollama list` shows the requested model. If port 39998 is busy, close the other editor or Buddy process and restart. If Buddy cannot connect, confirm that the Signal Run table is open in Singleplayer.
 
 Run `npm ci` once to install the pinned development-only Lua test harness, then `npm test`. The application uses Node built-ins at runtime.
 

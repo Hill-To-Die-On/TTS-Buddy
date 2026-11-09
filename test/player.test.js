@@ -36,6 +36,6 @@ test('preload rejects missing models and incomplete load responses', async t => 
     json: async () => ({ done: false }),
   }));
   fetch.mock.mockImplementationOnce(async () => ({ ok: false, status: 404 }));
-  await assert.rejects(() => preloadOllama({ model: 'local' }), /Local model unavailable/);
+  await assert.rejects(() => preloadOllama({ model: 'local' }), { message: 'Local model unavailable', status: 404 });
   await assert.rejects(() => preloadOllama({ model: 'local' }), /Local model unavailable/);
 });

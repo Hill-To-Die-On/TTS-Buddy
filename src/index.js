@@ -5,10 +5,12 @@ import { Bridge } from './bridge.js';
 import { historyRecord } from './history.js';
 import { Session } from './session.js';
 import { chooseBaseline, chooseOllama, preloadOllama, publicDescription } from './player.js';
+import { startLoadingBar } from './startup-progress.js';
 
 const baseline = process.argv.includes('--baseline');
 const local = process.argv.includes('--local');
-const model = process.env.TTS_BUDDY_MODEL || (local ? 'qwen3:4b-instruct-2507-q4_K_M' : undefined);
+const defaultModel = 'qwen3:4b-instruct-2507-q4_K_M';
+const model = process.env.TTS_BUDDY_MODEL || (local ? defaultModel : undefined);
 const baseUrl = process.env.TTS_BUDDY_OLLAMA_URL || 'http://127.0.0.1:11434';
 if (!baseline && !model) {
   console.error('Set TTS_BUDDY_MODEL to an installed local Ollama model, or start with --baseline.');
@@ -25,10 +27,14 @@ try {
 
 if (local && !baseline) {
   console.log(`Loading ${model} in Ollama. This can take up to two minutes.`);
+  const stopProgress = startLoadingBar(process.stdout);
   try {
-    await preloadOllama({ model, baseUrl });
-  } catch {
+    await preloadOllama({ model, baseUrl }).finally(stopProgress);
+  } catch (error) {
     console.error(`Ollama could not load ${model}. Start Ollama, check that the model is installed, then launch Buddy again.`);
+    if (error.status === 404 && model === defaultModel) {
+      console.error(`Install Buddy's model in PowerShell with ollama pull ${defaultModel}`);
+    }
     bridge.close();
     process.exit(1);
   }

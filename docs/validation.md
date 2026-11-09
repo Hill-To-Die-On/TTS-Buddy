@@ -70,6 +70,12 @@ On the first clean MVP install, the extracted save loaded in guest slot 98 and t
 
 The restored VM booted Windows, then Guest Control timed out during model preparation before the second install started. The exact ZIP has fresh-extract, save-load and cold-start evidence. Full-match and recovery evidence comes from the byte-identical live runtime and save above. The timed setup results remain those of the earlier package. A full playthrough through the visible controls remains a usability check.
 
+## Windows startup patch 0.1.1
+
+When the launcher window closed on startup, the local Ollama service was reachable and its model list was missing the default Buddy model. The model appeared on a subsequent check. The 0.1.1 launcher reports an incomplete extraction or missing Node.js, displays an animated bar during model preload and leaves startup errors visible in an interactive console until Enter. Redirected runs preserve the exit code and finish without a prompt.
+
+All five new launcher tests failed before the changes and passed afterward. The fresh 0.1.1 ZIP passed all 22 Node tests and the Lua suite. Two builds produced the same SHA-256 `F5BF26ADB9B5E78252903714298C8904243BD7E07FF61CC6BB7DA1F9D4EAFF8D`, and the included Signal Run save rebuilt to the same SHA-256 as 0.1.0. A hidden Windows console using the packaged launcher and a simulated model failure showed 16 animation frames, kept the error visible until Enter and returned the original nonzero exit code.
+
 ## Outstanding gates
 
 - Ask independent testers whether they would play again.
