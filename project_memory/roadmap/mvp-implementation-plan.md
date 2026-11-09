@@ -43,11 +43,13 @@ Accept fixed commands from the companion on loopback. Check request type, match 
 
 **Exit evidence.** At least one full live model-driven match, the failure tests and a recorded baseline comparison. Treat a simulated or baseline match as evidence for its own layer.
 
-## M3 · Package and run the local pilot
+## M3 · Package the personal-use MVP
 
 1. Supply a reproducible Windows launch command or launcher, the original demo save with its Lua, and a quick start with prerequisites, first match, pause/resume, port conflict and troubleshooting. Record the TTS build and model used. Keep API credentials out of the workflow.
 2. Run the canonical pilot gates. Time two clean setups after prerequisites are ready. Run five consecutive full model-driven matches and at least 20 AI turns. Record turn timings, slowest turn, correct result, rejected or duplicate attempts, interventions and whether each tester would play again.
-3. Check the demo and run tests from a fresh copy of the intended package. Tag the local pilot only after the documented gates pass. For any incomplete gate, name the remaining test, give the exact command or steps to run it, and retain the evidence collected so far.
+3. Check the demo and run tests from a fresh copy of the intended package. Match its runtime and save bytes to the live evidence, or repeat affected checks if they differ. Record usability observations separately from the automated results.
+
+An external pilot requires independent feedback, distribution review and acceptance of the pilot revision before tagging it. The personal-use Windows package and its technical evidence are recorded in [validation](../../docs/validation.md).
 
 ## Ownership and handoffs
 

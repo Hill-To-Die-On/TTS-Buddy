@@ -22,10 +22,56 @@ Live recovery checks covered a forced Ollama timeout, stale decision after table
 
 Windows Git archive exports exposed CRLF in the outer save and source-dependent line endings in embedded Lua. The builder now normalizes CRLF and `.gitattributes` pins table files to LF. Exports with LF and CRLF inputs reproduced the same save SHA-256 `550D8A7F8F9AFD8F55FC5D60FB80F84DD673F94EDEAABD472B55F54F26F03292`. A check using `git archive --worktree-attributes` verified the attributes. Embedded Lua matched after newline normalization and non-script JSON fields were identical.
 
-The build regression test failed against the M2 builder with a line-ending mismatch and passed against the M3 fix. The full `npm test` suite passed all 15 Node tests and the Lua suites, including 20 seeded rules-only matches. The normalized artifact still needs a live run. The final pilot revision remains to be selected.
+The build regression test failed against the M2 builder with a line-ending mismatch and passed against the M3 fix. The full `npm test` suite passed all 15 Node tests and the Lua suites, including 20 seeded rules-only matches. The final pilot revision remains to be selected.
+
+## M3 Windows VM live checks
+
+On 9 November 2026, a dedicated VirtualBox 7.2.22 guest booted Windows 11 Enterprise LTSC Evaluation with four virtual CPUs and 6 GiB of RAM. Setup needed recovery from stalled reboots. The guest file-transfer service came up after a cold boot with basic graphics and guest paravirtualization disabled.
+
+The guest rebuilt candidate `1028598`, reproduced the normalized save checksum above and passed all 15 Node tests, including the line-ending regression. The live harness failed at the expected table connection check before the guest had a running copy of Tabletop Simulator. Steam's initial client update failed before installing its interface library. Verified stable Valve packages repaired it. Steam installed Tabletop Simulator 14.2.2 (Steam build `22252224`). Steam Cloud was disabled in the guest after Steam flagged a save sync conflict. The exact candidate was staged in unused guest slot 99 and loaded in a local Singleplayer table using the in-game console.
+
+With 8 GiB of guest RAM and 3D acceleration enabled, Tabletop Simulator initialized Direct3D 11.1 through the VirtualBox WDDM adapter. The game remained at a black window without a scripting listener. Direct3D 11 software rendering through the Microsoft Basic Render Driver reached the menu and loaded Signal Run with VirtualBox 3D disabled.
+
+The exact normalized save completed a scripted White-seat match against the deterministic player. Human won 7–6 after six Buddy turns. The harness checked the public observation fields, turn revisions, scores and winner.
+
+The first simulated timeout check used a 250 ms deadline and did not observe a request reaching the test endpoint. A rerun with a 3-second deadline confirmed that the stalled endpoint received the request, the adapter raised a timeout and Buddy paused without a move. The rerun also passed stale-decision rejection after pause/resume, lost acknowledgement, reconnect and replay of the same receipt without duplicating a move. The product timeout was unchanged.
+
+Guest Ollama 0.40.15 used the official `qwen3:4b-instruct-2507-q4_K_M` tag on CPU. The first live request hit the existing 30-second deadline during a cold load and Buddy paused. A separate warm-up completed in 19.9 seconds, including 18.4 seconds loading weights. Three consecutive model matches then finished at 6–7, 6–7 and 8–4 (Human–Buddy). The fourth paused on a stalled turn. VirtualBox logged 132 seconds of clock lag during that run, and Ollama logged a request lasting 100 seconds. The batch did not satisfy the five-match gate.
+
+A second batch with the model preloaded and the guest display reduced to 800 × 600 passed five consecutive scripted White-seat matches. Human–Buddy scores were 5–7, 7–5, 7–6, 7–6 and 5–7. The harness verified scores, winners and revisions without illegal moves, duplicate moves or manual repairs. Across 25 model turns, the median was 6.00 seconds and the slowest was 6.05 seconds from turn dispatch through table confirmation. The 30-second model deadline and five-second table deadline were unchanged.
+
+An initial live privacy probe timed out during another VirtualBox clock lag. The retry used synthetic states in the loaded table with matching public state and different hidden White cards and deck order. The raw Buddy observations matched. A guessed object ID returned a generic rejection without changing state. The probe verified White-scoped UI declarations during takeover, manual play, release to automatic play, and a draw in Buddy's projection. It inspected UI declarations on the Singleplayer host. The production CLI then attached, wrote only public history fields and stopped without changing the table.
+
+## Local pilot package
+
+`TTS-Buddy-M3-1028598.zip` packages the committed code and table from `10285982045d0ba2bc47bc852e918fdd36b9a506` with a fresh-machine quick start. Two independent archive builds produced the same SHA-256 `E950FCE393B1B60304AC7608E2711A783F1ED71A46D8DC5A283A9747CF32E67D`. A fresh extraction rebuilt the exact normalized save, passed all 15 Node tests and passed the Lua suite using the existing pinned development dependencies. The ZIP contains project files only. The licensed game, Node, Ollama and the model are installed separately.
+
+Timed setup 1 used a fresh extraction of that ZIP, guest save slot 19 and the production CLI in Singleplayer. With the model warmed, elapsed time from extraction start through the first confirmed Buddy move was **2 minutes 10.5 seconds**. The harness invoked the same White-seat callbacks as the in-game New match and first card buttons. The first Buddy move was Boost at revision 3, with the history and live table showing a 2–2 score. An earlier attempt stalled in VirtualBox before model preparation finished and before the setup timer started.
+
+Timed setup 2 used a separate fresh extraction and guest save slot 21. After guest control stalled between runs, Windows was shut down cleanly and cold-started with VirtualBox's Hyper-V guest paravirtualization provider. With the model warmed, the production CLI confirmed Buddy's first move after **1 minute 38.1 seconds**. Buddy played Boost at revision 3 to make the score 2–2. Both technical setups met the 10-minute target. The VM was shut down, its prior settings were restored and autostart was verified off.
+
+## Personal launcher
+
+The Windows launcher now loads the installed model before the first table inspection. The preload tests initially failed because the operation was missing. They then passed for a prompt-free load, a missing model and an incomplete response. The full suite passed 17 Node tests and the Lua tests.
+
+A Windows smoke check invoked the actual batch file from a fresh runtime copy with simulated Ollama and TTS services on localhost. It verified preload before the first model move, a custom model, a deterministic baseline without Ollama and a startup error without table requests when the model was missing. The timed pilot ZIP above represents the earlier candidate.
+
+On 9 November, the dedicated Windows VM ran the updated batch launcher against the exact Signal Run save in slot 99. The guest needed clock recovery while opening the save. Ollama reported the model unloaded before launch and loaded after **20.345 seconds**. Scripted White moves exercised a complete real Singleplayer match. Buddy won **7–6** in five Buddy turns. The driver checked every public revision and score through revision 11 and confirmed that the CLI agreed with the result.
+
+The full-match driver's stop wait timed out after the confirmed finish. A separate check attached the same launcher to the finished game, observed pause and resume, then sent `stop` with standard input still open. The process exited with code 0 in **1.730 seconds**, released its callback port and left the table at revision 11 with the same final score. A personal playthrough remains the next usability check.
+
+## Personal-use MVP package 0.1.0
+
+`TTS-Buddy-Signal-Run-MVP-0.1.0.zip` includes the updated Windows launcher, prebuilt Signal Run save and first-run guide. Its SHA-256 is `E2EEFBCFE629024904B60ABA0160D63F96CFE03E5C4F559712A5B866C6C510BA`. The package recipe regenerated that ZIP byte for byte. The fresh extraction passed all 17 Node tests and the Lua suite, and rebuilt the save to SHA-256 `550D8A7F8F9AFD8F55FC5D60FB80F84DD673F94EDEAABD472B55F54F26F03292`.
+
+All seven files used by the packaged runtime match the earlier live launcher archive byte for byte. The save also matches the one used for the five-match batch and recovery checks. Signal Run publishes the card just played, and the paired-state probe exercised a private draw in Buddy's projection and the permitted disclosure during White's takeover.
+
+On the first clean MVP install, the extracted save loaded in guest slot 98 and the packaged launcher preloaded the cold model in **35.644 seconds**. VirtualBox then lost the guest heartbeat. Buddy paused on an uncertain table response, and the New match click reached the table after clock recovery. That attempt ended before the first Buddy move. A two-CPU restart stalled in firmware and the guest was restored to four CPUs.
+
+The restored VM booted Windows, then Guest Control timed out during model preparation before the second install started. The exact ZIP has fresh-extract, save-load and cold-start evidence. Full-match and recovery evidence comes from the byte-identical live runtime and save above. The timed setup results remain those of the earlier package. A full playthrough through the visible controls remains a usability check.
 
 ## Outstanding gates
 
 - Ask independent testers whether they would play again.
-- Run the normalized release save live and verify the selected revision and fresh-machine package. Use a dedicated Windows VM or spare PC for foreground play. Guest 3D support and the full VM setup remain unproven. Once loaded, the local bridge baseline can run without foreground desktop interaction.
+- Select the accepted release revision after the independent playtest. Repeat affected checks if the package changes.
 - Review distribution terms. Do not tag a pilot or make it public until its gates pass.

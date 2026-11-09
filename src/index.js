@@ -4,10 +4,11 @@ import { setTimeout as sleep } from 'node:timers/promises';
 import { Bridge } from './bridge.js';
 import { historyRecord } from './history.js';
 import { Session } from './session.js';
-import { chooseBaseline, chooseOllama, publicDescription } from './player.js';
+import { chooseBaseline, chooseOllama, preloadOllama, publicDescription } from './player.js';
 
 const baseline = process.argv.includes('--baseline');
-const model = process.env.TTS_BUDDY_MODEL;
+const local = process.argv.includes('--local');
+const model = process.env.TTS_BUDDY_MODEL || (local ? 'qwen3:4b-instruct-2507-q4_K_M' : undefined);
 const baseUrl = process.env.TTS_BUDDY_OLLAMA_URL || 'http://127.0.0.1:11434';
 if (!baseline && !model) {
   console.error('Set TTS_BUDDY_MODEL to an installed local Ollama model, or start with --baseline.');
@@ -20,6 +21,17 @@ try {
 } catch {
   console.error('Cannot listen on 127.0.0.1:39998. Close another external editor or Buddy instance.');
   process.exit(1);
+}
+
+if (local && !baseline) {
+  console.log(`Loading ${model} in Ollama. This can take up to two minutes.`);
+  try {
+    await preloadOllama({ model, baseUrl });
+  } catch {
+    console.error(`Ollama could not load ${model}. Start Ollama, check that the model is installed, then launch Buddy again.`);
+    bridge.close();
+    process.exit(1);
+  }
 }
 
 let lastRevision = '';

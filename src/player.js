@@ -71,6 +71,23 @@ export function publicDescription(snapshot) {
   return action ? `${action.seat === 'buddy' ? 'Buddy' : 'Human'} played ${action.card}.${action.effect ? ' ' + action.effect : ''}` : '';
 }
 
+async function generateOllama(baseUrl, timeoutMs, body) {
+  const response = await fetch(`${baseUrl}/api/generate`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    signal: AbortSignal.timeout(timeoutMs),
+    body: JSON.stringify({ ...body, stream: false }),
+  });
+  if (!response.ok) throw Error('Local model unavailable');
+  return response.json();
+}
+
+export async function preloadOllama({ model, timeoutMs = 120000, baseUrl = 'http://127.0.0.1:11434' }) {
+  if (!model) throw Error('Choose a local Ollama model');
+  const result = await generateOllama(baseUrl, timeoutMs, { model });
+  if (result?.done !== true) throw Error('Local model unavailable');
+}
+
 export async function chooseOllama(snapshot, { model, timeoutMs = 30000, baseUrl = 'http://127.0.0.1:11434' } = {}) {
   if (!model) throw Error('Choose a local Ollama model');
   if (snapshot.legalActions.length < 1 || snapshot.legalActions.length > 26) throw Error('Invalid table snapshot');
@@ -86,18 +103,11 @@ export async function chooseOllama(snapshot, { model, timeoutMs = 30000, baseUrl
     `${option.letter}: ${option.card} -> Buddy ${option.buddy}, Human ${option.human}${option.buddy >= 7 ? ' (Buddy wins)' : ''}`
   ).join('\n');
   const prompt = `You are Buddy in Signal Run. First to 7 points wins. Choose the best legal action; take an immediate win. Jam reduces the human score by 1, minimum zero. Current score: Buddy ${snapshot.scores.buddy}, Human ${snapshot.scores.human}. Results after each legal play:\n${lines}\nReturn JSON with choice equal to one letter.`;
-  const response = await fetch(`${baseUrl}/api/generate`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    signal: AbortSignal.timeout(timeoutMs),
-    body: JSON.stringify({
-      model, stream: false,
-      format: { type: 'object', properties: { choice: { type: 'string', enum: options.map(option => option.letter) } }, required: ['choice'], additionalProperties: false },
-      options: { temperature: 0, num_predict: 40 },
-      prompt,
-    }),
+  const data = await generateOllama(baseUrl, timeoutMs, {
+    model,
+    format: { type: 'object', properties: { choice: { type: 'string', enum: options.map(option => option.letter) } }, required: ['choice'], additionalProperties: false },
+    options: { temperature: 0, num_predict: 40 },
+    prompt,
   });
-  if (!response.ok) throw Error('Local model unavailable');
-  const data = await response.json();
   return parseModelChoice(data.response, snapshot);
 }

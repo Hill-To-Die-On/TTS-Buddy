@@ -1,6 +1,6 @@
 # TTS Buddy MVP plan and roadmap
 
-Implementation underway · 9 November 2026
+Personal-use Windows MVP 0.1.0 · 9 November 2026
 
 [Detailed implementation plan](mvp-implementation-plan.md)
 
@@ -34,9 +34,12 @@ Working estimate for one developer is **10–18 focused development days**, with
 | M0 · Prove the connection | 1–2 days | On the current Windows TTS build, read a known object, apply one named move, observe the result and reconnect safely. Choose the demo game and record the desktop experiment and bridge reuse decision. |
 | M1 · Finish a game with a test player | 3–5 days | From setup to final score, one human and a deterministic opponent finish the supported game in TTS. The rules tests cover each card effect, scoring and game end. |
 | M2 · Replace test decisions with a model | 4–7 days | Buddy finishes full matches with model-driven moves. Test pause, manual takeover and recovery after a forced interruption. Retain the deterministic player for comparison and debugging. |
-| M3 · Package and playtest | 2–4 days | Produce a repeatable Windows build, demo save and quick start. Complete the playtest gates below and tag a local pilot build. Review distribution terms before making a build or save public. |
+| M3 · Package the personal MVP | 2–4 days | Produce a reproducible Windows package, demo save and quick start. Verify the included runtime and save against the technical evidence below. |
+| External pilot | Later | Resolve distribution questions, collect independent playtest feedback and accept a revision for the pilot tag. |
 
-M0 evidence, including the desktop experiment and bridge reuse decision, is recorded in [docs/m0-evidence.md](../../docs/m0-evidence.md). Live baseline and model matches, recovery checks, and two setup timings are recorded in [docs/validation.md](../../docs/validation.md). M3 is in progress; the [pilot brief](../../docs/pilot.md) sets out the independent playtest and initial distribution review. Independent player feedback, distribution review and the local pilot tag remain open.
+M0 evidence, including the desktop experiment and bridge reuse decision, is recorded in [docs/m0-evidence.md](../../docs/m0-evidence.md). [Validation](../../docs/validation.md) records the live model batch, recovery checks and two timed setups from the exact M3 candidate ZIP. The [pilot brief](../../docs/pilot.md) covers the remaining distribution clarification and independent playtest. The pilot tag follows acceptance of those checks.
+
+The private 0.1.0 ZIP contains the exact runtime and save that finished a scripted local Singleplayer match. Package reproducibility, fresh-extract tests and the VM observations are in [validation](../../docs/validation.md). A personal playthrough remains the usability check for the player experience.
 
 ### MVP backlog
 
@@ -48,7 +51,8 @@ M0 evidence, including the desktop experiment and bridge reuse decision, is reco
 - [x] M1 · Run a full match with the deterministic player and verify turn order, effects, final score and win condition. #mvp <!-- rm:mvp-baseline-match -->
 - [x] M2 · Connect one model provider, compare its decisions to the test player and surface Buddy's public move explanations. #mvp <!-- rm:mvp-model-player -->
 - [x] M2 · Verify hidden-information filtering, interrupted actions, pause, takeover and resync. #mvp <!-- rm:mvp-turn-safety -->
-- [ ] M3 · Package the Windows pilot, run the release checks and tag the accepted build. #mvp <!-- rm:mvp-pilot -->
+- [x] M3 · Package and verify the personal-use Windows MVP. #mvp <!-- rm:mvp-personal-package -->
+- [ ] External pilot · Collect independent feedback, complete distribution review and tag the accepted pilot build. #mvp <!-- rm:mvp-pilot -->
 <!-- atlasmind:roadmap-items:end -->
 
 ### Pilot release gates
@@ -63,6 +67,6 @@ These thresholds are initial targets for the local pilot.
 
 ## After MVP
 
-- **Next.** Add a second game adapter to test reuse. Try verified rulebook lookup, session save/resume across TTS restarts, richer explanations and a cooperative scenario.
+- **Next.** Choose a short two-player game worth playing locally, with original or authorised materials, a compact state and a clear set of legal moves. Use it to test a different mechanic from Signal Run, such as visible board movement. Select the game explicitly and verify the table's game identity before Buddy decides or acts. Keep the existing protocol and save compatible with Signal Run. Test that the wrong adapter pauses before a model request or move. Try verified rulebook lookup, session save/resume across TTS restarts, richer explanations and a cooperative scenario after the second adapter.
 - **Later.** Add voice, campaign memory and spoiler controls for **ISS Vanguard**, tactical movement and line of sight for **Imperial Assault**, then negotiation, several AI factions and separate player memories for **Twilight Imperium**.
 - **Separate decisions.** Evaluate a separate Steam client if an independent player seat becomes a requirement. Treat online automation, third-party assets and monetisation as separate permission and distribution reviews. TTS's published EULA addresses mod distribution and unauthorised automation in online features. [Tabletop Simulator EULA](https://store.steampowered.com/eula/286160_eula_0)

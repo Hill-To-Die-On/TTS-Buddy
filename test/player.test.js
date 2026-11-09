@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { validateSnapshot, chooseBaseline, parseModelChoice, publicDescription, chooseOllama } from '../src/player.js';
+import { validateSnapshot, chooseBaseline, parseModelChoice, publicDescription, chooseOllama, preloadOllama } from '../src/player.js';
 import { Session } from '../src/session.js';
 
 const snapshot = { protocol:1, matchId:'match-1', revision:4, phase:'playing', activeSeat:'buddy', scores:{human:2,buddy:3}, hand:[{slot:1,card:'Boost'},{slot:2,card:'Jam'}], legalActions:['4:1','4:2'], previews:[{actionId:'4:1',human:2,buddy:5},{actionId:'4:2',human:1,buddy:4}], status:'running', lastAction:null, winner:null };
@@ -16,3 +16,26 @@ test('a rejected stale decision pauses without retry',async()=>{let calls=0;cons
 test('model failure pauses and never submits an action',async()=>{let plays=0;const b={request:async m=>{if(m.type==='play')plays++;return {snapshot};}};const s=new Session(b,async()=>{throw Error('timeout')});await s.turn();assert.equal(s.mode,'paused');assert.equal(plays,0);});
 
 test('model prompt uses legal letters and rule-provided score previews',async()=>{const previous=globalThis.fetch;let body;globalThis.fetch=async (_url,options)=>{body=JSON.parse(options.body);return {ok:true,json:async()=>({response:'{"choice":"A"}'})};};try {assert.equal(await chooseOllama(snapshot,{model:'local'}),'4:1');assert.deepEqual(body.format.properties.choice.enum,['A','B']);assert.match(body.prompt,/A: Boost.*Buddy 5.*Human 2/);} finally {globalThis.fetch=previous;}});
+
+test('preload requests the configured model without sending a prompt', async t => {
+  const fetch = t.mock.method(globalThis, 'fetch', async () => ({
+    ok: true,
+    json: async () => ({ done: true, done_reason: 'load' }),
+  }));
+  await preloadOllama({ model: 'local', baseUrl: 'http://127.0.0.1:11436' });
+  assert.equal(fetch.mock.callCount(), 1);
+  const [url, options] = fetch.mock.calls[0].arguments;
+  assert.equal(url, 'http://127.0.0.1:11436/api/generate');
+  assert.equal(options.method, 'POST');
+  assert.deepEqual(JSON.parse(options.body), { model: 'local', stream: false });
+});
+
+test('preload rejects missing models and incomplete load responses', async t => {
+  const fetch = t.mock.method(globalThis, 'fetch', async () => ({
+    ok: true,
+    json: async () => ({ done: false }),
+  }));
+  fetch.mock.mockImplementationOnce(async () => ({ ok: false, status: 404 }));
+  await assert.rejects(() => preloadOllama({ model: 'local' }), /Local model unavailable/);
+  await assert.rejects(() => preloadOllama({ model: 'local' }), /Local model unavailable/);
+});

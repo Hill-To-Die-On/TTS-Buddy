@@ -1,3 +1,5 @@
 @echo off
-cd /d "%~dp0"
-node src/index.js %*
+setlocal
+cd /d "%~dp0" || exit /b 1
+node src/index.js --local %*
+exit /b %errorlevel%

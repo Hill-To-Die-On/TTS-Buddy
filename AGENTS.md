@@ -49,3 +49,7 @@ repository, whichever tool it runs in.
 ## Test-driven development
 
 Use red/green test-driven development wherever practical. First write a test for the expected behaviour and watch it fail for the intended reason. Make the smallest change that passes it, then run the broader suite. When a check requires the live game or manual verification, record what was checked and why an automated test was impractical.
+
+## Local test VM
+
+Keep the TTS Buddy M3 VM powered off between uses. Start it for active setup, a live test or a requested preview. When that work ends and no one is viewing the guest, shut down Windows cleanly and verify VirtualBox reports the VM is powered off. Keep host autostart disabled.
