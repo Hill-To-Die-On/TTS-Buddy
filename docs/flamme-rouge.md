@@ -1,6 +1,6 @@
 # Flamme Rouge head-to-head plan
 
-Selected on 10 November 2026 as the next game after Signal Run. The rules engine and tutorial lessons are written and tested. Table integration and live validation are pending (see [progress](#progress) below).
+Selected on 10 November 2026 as the next game after Signal Run, and as the first test of Buddy joining an existing Workshop table. The rules engine and tutorial lessons are written and tested. Table integration and live validation are pending (see [progress](#progress) and [joining the Workshop table](#joining-the-workshop-table) below).
 
 ## First playable race
 
@@ -59,6 +59,24 @@ Two rulings the rulebook leaves open:
 
 Which face is lower case, which deck belongs to which rider and the card values all need a look at the live table, because nothing is labelled.
 
-**Next.** Decide how Buddy's Lua gets onto the table (a local, undistributed copy of the Workshop save with a Global script, or an original table), map the objects, then complete step 2 against the deterministic player.
+## Joining the Workshop table
+
+Decided on 10 November 2026: Flamme Rouge runs on its existing Workshop table, not an original one. It's the first test of Buddy joining a Workshop game it didn't come with. The longer-term aim is for Buddy to join any Workshop game as an opponent, a teammate or a games master, and to teach it. So each piece below is built to carry over to other games.
+
+1. **Attach.** With the Workshop table loaded in Singleplayer, Buddy's host connects over the same localhost External Editor API and loads a small agent script into the running game. The mod itself is never edited or saved over. Only the trusted host does this; the model still only ever picks from legal moves.
+2. **Survey.** The agent lists the table's objects (type, tint, position, deck contents and images), and Buddy proposes a mapping:
+   - which tiles form the track, and in what order;
+   - which figure and deck belong to each rider;
+   - which piles hold the exhaustion cards.
+
+   For an unlabelled mod like this one, the player confirms or corrects that mapping once, and it's saved locally as a table profile. This is also where the square counts, line positions and tile faces get checked.
+3. **Seats and hidden cards.** Buddy takes a seat colour with its own hand zone. The agent reads Buddy's hand and anything face up. It never reads the player's hand or face-down cards until the rules reveal them.
+4. **Physical moves.** Buddy draws into its hand, places its chosen card face down, and after the reveal moves riders to the right squares, worked out from the tile positions. The player uses the normal TTS controls, and the agent only reads their choices once they're turned over.
+5. **Play, then teach.** First comes a full race against the rules-based Buddy, then one against the local model. After that, a guided first round on the live table, where Buddy explains each phase as it happens, using the lessons in `tts/flamme-rouge/tutorial.lua`.
+
+Questions for the first spike:
+- Can code sent through the External Editor API register the event handlers the agent needs, such as `onExternalMessage`, without a Save & Play, which would reload the table? The fallback is Save & Play, which is how the [M0 spike](m0-evidence.md) installed its handler on a disposable table.
+- How reliably can the player's committed card be detected while it's face down, and when is it safe to read its value?
+- How well can rider positions be read back if someone nudges a piece by hand?
 
 Imperial Assault Skirmish is a later tactical candidate. Its unit abilities, line of sight and mission rules make it a larger adapter. [Official Skirmish Guide](https://www.fantasyflightgames.com/ffg_content/imperial-assault/support/SWI01_Skirmish%20Guide.pdf)

@@ -58,6 +58,8 @@ The private 0.1.0 ZIP contains the exact runtime and save that finished a script
 - [ ] Flamme Rouge · Finish a live head-to-head race with a local model and rerun Signal Run checks. #post-mvp <!-- rm:flamme-rouge-model -->
 - [ ] Tutorial · Play through the Signal Run tutorial live in TTS, with a local model explaining each step. #post-mvp <!-- rm:tutorial-signal-run-live -->
 - [ ] Tutorial · Give every game adapter its own lessons, starting with Flamme Rouge on its table. #post-mvp <!-- rm:tutorial-every-game -->
+- [ ] Workshop tables · Attach Buddy to a loaded Workshop table at runtime, survey its pieces and save a confirmed table profile, starting with Flamme Rouge. #post-mvp <!-- rm:workshop-attach-survey -->
+- [ ] Tutorial · Teach through a guided first round on the live table, starting with Flamme Rouge. #post-mvp <!-- rm:tutorial-guided-round -->
 <!-- atlasmind:roadmap-items:end -->
 
 ### Pilot release gates
@@ -72,7 +74,7 @@ These thresholds are initial targets for the local pilot.
 
 ## After MVP
 
-- **Next.** Build the [Flamme Rouge head-to-head adapter](../../docs/flamme-rouge.md) for one local introductory race. Use visible track movement and private simultaneous card choices to exercise the adapter boundary. Verify the game identity before any model request or move and keep Signal Run compatible. Imperial Assault Skirmish remains the later tactical candidate.
+- **Next.** Build the [Flamme Rouge head-to-head adapter](../../docs/flamme-rouge.md) for one local introductory race, on its existing Workshop table. It's the first test of Buddy joining a Workshop game it didn't come with, on the way to joining any Workshop game as an opponent, a teammate or a games master. Use visible track movement and private simultaneous card choices to exercise the adapter boundary. Verify the game identity before any model request or move and keep Signal Run compatible. Imperial Assault Skirmish remains the later tactical candidate.
 - **Tutorial mode.** Every supported game gets step-by-step lessons that Buddy explains at the table, with practice moves checked by that game's rules. The shared runner and the Signal Run lessons are built and tested, and the Flamme Rouge lessons are ready for its table. [Tutorial mode](../../docs/tutorial.md)
 - **Later.** Add voice, campaign memory and spoiler controls for **ISS Vanguard**, tactical movement and line of sight for **Imperial Assault**, then negotiation, several AI factions and separate player memories for **Twilight Imperium**.
 - **Separate decisions.** Evaluate a separate Steam client if an independent player seat becomes a requirement. Treat online automation, third-party assets and monetisation as separate permission and distribution reviews. TTS's published EULA addresses mod distribution and unauthorised automation in online features. [Tabletop Simulator EULA](https://store.steampowered.com/eula/286160_eula_0)

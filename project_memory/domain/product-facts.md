@@ -14,7 +14,7 @@ The Windows launcher checks running local model servers. It tries `qwen3:4b-inst
 
 ## Tutorial Mode
 
-Added 2026-11-10, automated tests only, not yet tried live in TTS.
+Added 2026-11-10. It's covered by automated tests, and a personal playthrough in TTS the same day was reported as good. Whether Buddy's model notes appeared in that playthrough wasn't recorded.
 
 The Signal Run table has a **Tutorial** button for the White seat. It walks through eight lessons: the goal, taking a turn, Charge, Boost, Jam, hidden information, running out of cards and a wrap-up. Charge, Boost and Jam are practice steps, played with the hand buttons on staged positions and checked by the Signal Run rules. A wrong move resets the position. Starting the tutorial pauses any match, and Buddy can't play while it's open.
 
@@ -34,6 +34,8 @@ The rules engine (`tts/flamme-rouge/rules.lua`) covers two teams on Avenue Corso
 - the ascent cap of 5 and the descent minimum of 5.
 
 A rider with no cards at all plays an exhaustion card, because the rulebook doesn't cover it. The course data assumes 78 squares, 5 behind the start line and the finish line 5 squares before the end. Those square counts and line positions are still to check on the live table. The rules aren't connected to a TTS table yet. [Progress](../../docs/flamme-rouge.md#progress)
+
+2026-11-10 · Flamme Rouge targets its existing Workshop table (Flamme Rouge [ENG] [RUS]), as the first test of Buddy joining a Workshop game it didn't come with. The proposed approach: attach to the loaded table at runtime, survey its pieces with a human-confirmed mapping, and leave the mod itself unedited. It's set out in the [plan](../../docs/flamme-rouge.md#joining-the-workshop-table).
 
 ## Decisions
 

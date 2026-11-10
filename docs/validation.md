@@ -99,9 +99,11 @@ These are automated checks only, run on 10 November 2026 on branch `feature/flam
 
 The Node tests cover tutorial snapshot validation, the grounded tutor prompt, the rejection of notes with unknown numbers, one explanation per step without playing or pausing, and a selected LM Studio player explaining a step.
 
+**Personal playtest, 10 November 2026.** The rebuilt save (SHA-256 starting `12481e2a713d2693`) was installed in slot 25 on the development PC, with Ollama serving `qwen3:4b-instruct-2507-q4_K_M`. The developer played through the Signal Run tutorial in Tabletop Simulator and reported that it was good. No problems were reported. This is personal feedback, not an independent playtest, and no step-by-step record was kept.
+
 Not yet checked live:
-- The rebuilt Signal Run save with the **Tutorial** button hasn't been loaded in Tabletop Simulator, so its panel layout is untested. It no longer matches the save checksums recorded above.
-- No model-written tutorial note has been seen at a real table.
+- Whether Buddy's model-written note appeared under each tutorial step wasn't recorded in that playtest.
+- The rebuilt save no longer matches the save checksums recorded above, so the earlier match and recovery evidence applies to the older save.
 - The Flamme Rouge rules aren't connected to any table yet.
 
 The launcher tests need `NoDefaultCurrentDirectoryInExePath` unset in shells that set it (see [CONTRIBUTING](../CONTRIBUTING.md#troubleshooting-the-tests)).
