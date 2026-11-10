@@ -1,6 +1,6 @@
 # Prototype validation record
 
-9 November 2026. The local MVP is playable and has passed live technical checks. Independent player feedback and distribution review are pending for the pilot.
+Updated 10 November 2026. The local MVP is playable and has passed live technical checks. Independent player feedback and distribution review are pending for the pilot.
 
 ## Completed so far
 
@@ -84,6 +84,10 @@ The new selector tests first failed because automatic discovery was missing. The
 
 Two builds produced the same archive SHA-256 `987D1148B4E57FF58F2C7A85EA0E5237B4699AA7ADD0D003F3BCF0E997238C7B`. The included save rebuilt to the existing Signal Run checksum.
 
+
+## Personal desktop playtest
+
+On 10 November 2026 the loaded Signal Run table reported a Global Lua error during onLoad and showed no New match button. Loading a fresh Signal Run save in an existing test slot brought back the center panel and New match button with White already seated. The player then reported that the game worked and Buddy responded quickly. The playtest yielded qualitative feedback. A full match result and timings for this run were not captured. The cause of the earlier load error remains unverified.
 
 ## Outstanding gates
 

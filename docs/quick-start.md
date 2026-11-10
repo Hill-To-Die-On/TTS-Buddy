@@ -58,4 +58,6 @@ Buddy stores public turn history in `tts-buddy-history.jsonl`. Commands in the B
 
 The launcher keeps an interactive window open after a startup error. Read the message before pressing Enter to close it. Check that the entire ZIP is extracted and the server you want is running. If port 39998 is busy, close the other external editor or Buddy instance and restart. If Buddy cannot connect to the table, confirm Signal Run is open in Singleplayer.
 
+If the table chat shows a Global Lua error during load and **New match** is missing, preserve any match you want to keep. Load a fresh copy of the supplied Signal Run save in a separate slot. Once it loads, **New match** is the leftmost button in the center panel.
+
 Run `npm ci` once to install the pinned development-only Lua test harness, then `npm test`. The application uses Node built-ins at runtime.

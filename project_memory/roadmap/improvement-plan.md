@@ -1,6 +1,6 @@
 # TTS Buddy MVP plan and roadmap
 
-Personal-use Windows MVP 0.1.2 · 9 November 2026
+Personal-use Windows MVP 0.1.2 · Updated 10 November 2026
 
 [Detailed implementation plan](mvp-implementation-plan.md)
 
@@ -39,9 +39,9 @@ Working estimate for one developer is **10–18 focused development days**, with
 
 M0 evidence, including the desktop experiment and bridge reuse decision, is recorded in [docs/m0-evidence.md](../../docs/m0-evidence.md). [Validation](../../docs/validation.md) records the live model batch, recovery checks and two timed setups from the exact M3 candidate ZIP. The [pilot brief](../../docs/pilot.md) covers the remaining distribution clarification and independent playtest. The pilot tag follows acceptance of those checks.
 
-The private 0.1.0 ZIP contains the exact runtime and save that finished a scripted local Singleplayer match. The 0.1.1 launcher update adds model-loading progress and keeps startup errors visible. Version 0.1.2 discovers local models, verifies that a candidate can play a sample turn and offers an Ollama download with interactive consent when needed. Package reproducibility, fresh-extract tests and the VM observations are in [validation](../../docs/validation.md). A personal playthrough remains the usability check for the player experience.
+The private 0.1.0 ZIP contains the exact runtime and save that finished a scripted local Singleplayer match. The 0.1.1 launcher update adds model-loading progress and keeps startup errors visible. Version 0.1.2 discovers local models, verifies that a candidate can play a sample turn and offers an Ollama download with interactive consent when needed. Package reproducibility, fresh-extract tests and the VM observations are in [validation](../../docs/validation.md). A personal playtest confirmed the game controls and responsive Buddy turns after loading a fresh save. A complete personal match result and independent playtest remain open.
 
-### MVP backlog
+### Delivery backlog
 
 <!-- atlasmind:roadmap-items:start -->
 - [x] M0 · Prove local TTS read, named move, acknowledgement and reconnect on a disposable save. #mvp <!-- rm:mvp-bridge-spike -->
@@ -53,6 +53,9 @@ The private 0.1.0 ZIP contains the exact runtime and save that finished a script
 - [x] M2 · Verify hidden-information filtering, interrupted actions, pause, takeover and resync. #mvp <!-- rm:mvp-turn-safety -->
 - [x] M3 · Package and verify the personal-use Windows MVP. #mvp <!-- rm:mvp-personal-package -->
 - [ ] External pilot · Collect independent feedback, complete distribution review and tag the accepted pilot build. #mvp <!-- rm:mvp-pilot -->
+- [ ] Flamme Rouge · Verify the local table, lock the introductory course and test the rules and private commitments. #post-mvp <!-- rm:flamme-rouge-rules -->
+- [ ] Flamme Rouge · Finish a live race against a deterministic Buddy and verify recovery during the reveal phase. #post-mvp <!-- rm:flamme-rouge-baseline -->
+- [ ] Flamme Rouge · Finish a live head-to-head race with a local model and rerun Signal Run checks. #post-mvp <!-- rm:flamme-rouge-model -->
 <!-- atlasmind:roadmap-items:end -->
 
 ### Pilot release gates
@@ -67,6 +70,6 @@ These thresholds are initial targets for the local pilot.
 
 ## After MVP
 
-- **Next.** Choose a short two-player game worth playing locally, with original or authorised materials, a compact state and a clear set of legal moves. Use it to test a different mechanic from Signal Run, such as visible board movement. Select the game explicitly and verify the table's game identity before Buddy decides or acts. Keep the existing protocol and save compatible with Signal Run. Test that the wrong adapter pauses before a model request or move. Try verified rulebook lookup, session save/resume across TTS restarts, richer explanations and a cooperative scenario after the second adapter.
+- **Next.** Build the [Flamme Rouge head-to-head adapter](../../docs/flamme-rouge.md) for one local introductory race. Use visible track movement and private simultaneous card choices to exercise the adapter boundary. Verify the game identity before any model request or move and keep Signal Run compatible. Imperial Assault Skirmish remains the later tactical candidate.
 - **Later.** Add voice, campaign memory and spoiler controls for **ISS Vanguard**, tactical movement and line of sight for **Imperial Assault**, then negotiation, several AI factions and separate player memories for **Twilight Imperium**.
 - **Separate decisions.** Evaluate a separate Steam client if an independent player seat becomes a requirement. Treat online automation, third-party assets and monetisation as separate permission and distribution reviews. TTS's published EULA addresses mod distribution and unauthorised automation in online features. [Tabletop Simulator EULA](https://store.steampowered.com/eula/286160_eula_0)

@@ -1,6 +1,6 @@
 # Signal Run — external Windows pilot
 
-The personal-use 0.1.0 package and its technical checks are recorded in [validation](validation.md). The earlier technical pilot ZIP used commit `10285982045d0ba2bc47bc852e918fdd36b9a506`. Select and tag an external pilot revision after the checks below.
+The personal-use packages through 0.1.2 and their technical checks are recorded in [validation](validation.md). The earlier technical pilot ZIP used commit `10285982045d0ba2bc47bc852e918fdd36b9a506`. Select and tag an external pilot revision after the checks below.
 
 ## Independent playtest
 
@@ -10,11 +10,11 @@ Use a dedicated Windows VM or spare PC so the development desktop remains availa
 2. Let them play a complete match using the table buttons. Record the score, outcome, errors, delays, unexpected behaviour and interventions. If a move's result is uncertain, pause and inspect before resuming. The [rules](signal-run.md) and quick start describe play, pause, takeover and recovery.
 3. Ask whether they could set up without help, whether Buddy's moves made sense, what felt slow or unfair, and whether they would play another match. Capture suggestions and permission to retain any shared diagnostics. Review the local turn history before sharing it.
 
-The local candidate has two technical setup timings and the VM model batch. Use the [pilot gates](../project_memory/roadmap/improvement-plan.md#pilot-release-gates) to review that evidence and repeat affected checks if the candidate changes. Record the independent tester's machine, model, candidate revision, results and any assistance.
+The earlier candidate has two technical setup timings and a VM model batch. The 0.1.2 launcher also has model-startup checks and personal desktop feedback. Use the [pilot gates](../project_memory/roadmap/improvement-plan.md#pilot-release-gates) to review that evidence and repeat affected checks if the candidate changes. Record the independent tester's machine, model, candidate revision, results and any assistance.
 
 ## Evidence and remaining work
 
-[Validation](validation.md) records two setup timings and five consecutive live model matches over the local bridge. Scripted White-seat actions exercised 28 model turns with a 1.8545-second median and zero illegal moves, duplicated moves or manual repairs. Earlier live play used the in-game human buttons.
+[Validation](validation.md) records two setup timings and five consecutive live model matches over the local bridge. In the host batch, scripted White-seat actions exercised 28 model turns with a 1.8545-second median and zero illegal moves, duplicated moves or manual repairs. Earlier live play used the in-game human buttons. The later personal desktop playtest reported responsive turns after loading a fresh save.
 
 M3 packaging checks found that Windows Git archive line endings could affect the outer JSON and embedded Lua. The builder now normalizes CRLF and `.gitattributes` pins table files to LF. LF and CRLF exports produced the same save SHA-256 `550D8A7F8F9AFD8F55FC5D60FB80F84DD673F94EDEAABD472B55F54F26F03292`. The guest rebuilt and loaded that exact save for the M3 live checks.
 
