@@ -54,6 +54,8 @@ For a deterministic opponent, run the following from the extracted folder.
 
 Buddy stores public turn history in `tts-buddy-history.jsonl`. Commands in the Buddy window are pause, resume and stop. The table has **Pause**, **Resume**, **Take over** and **Release Buddy** controls. Takeover lets White see and play Buddy's cards. If Buddy pauses after an uncertain result, check the table and type resume. Buddy reads the state again before deciding. After reloading a saved match, use the table's **Resume** button.
 
+New to Signal Run? Press **Tutorial** on the table for a step-by-step walkthrough of the rules, with a few practice moves. It pauses any match in progress, and **Leave tutorial** takes you back to it. If Buddy is running a local model, it adds a short explanation of each step. See [tutorial mode](tutorial.md).
+
 ## Checks and troubleshooting
 
 The launcher keeps an interactive window open after a startup error. Read the message before pressing Enter to close it. Check that the entire ZIP is extracted and the server you want is running. If port 39998 is busy, close the other external editor or Buddy instance and restart. If Buddy cannot connect to the table, confirm Signal Run is open in Singleplayer.

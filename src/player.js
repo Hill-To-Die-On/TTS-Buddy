@@ -1,4 +1,21 @@
 const cards = new Set(['Charge', 'Boost', 'Jam']);
+const slug = /^[a-z][a-z-]{0,39}$/;
+
+// A tutorial step as the table shows it. Only the lesson itself is kept, never feedback or earlier notes.
+function validTutorial(t) {
+  const text = (value, max) => typeof value === 'string' && value.length > 0 && value.length <= max;
+  if (!t || !slug.test(t.game) || !text(t.id, 100) || !slug.test(t.stepId) ||
+      !Number.isSafeInteger(t.total) || t.total < 1 || t.total > 100 ||
+      !Number.isSafeInteger(t.step) || t.step < 1 || t.step > t.total ||
+      !text(t.title, 100) || !text(t.text, 600) || (t.hint != null && !text(t.hint, 100)) ||
+      typeof t.needsPractice !== 'boolean' || typeof t.practiceDone !== 'boolean') {
+    throw Error('Invalid table snapshot');
+  }
+  return {
+    game: t.game, id: t.id, stepId: t.stepId, step: t.step, total: t.total, title: t.title, text: t.text,
+    hint: t.hint ?? null, needsPractice: t.needsPractice, practiceDone: t.practiceDone,
+  };
+}
 
 export function validateSnapshot(snapshot) {
   if (snapshot?.hand && !Array.isArray(snapshot.hand) && Object.keys(snapshot.hand).length === 0) {
@@ -14,7 +31,7 @@ export function validateSnapshot(snapshot) {
       !Number.isSafeInteger(snapshot.revision) || !['playing', 'finished', 'setup'].includes(snapshot.phase) ||
       !['human', 'buddy'].includes(snapshot.activeSeat) || !snapshot.scores ||
       !Array.isArray(snapshot.hand) || !Array.isArray(snapshot.legalActions) ||
-      !['running', 'paused', 'manual', 'complete'].includes(snapshot.status)) {
+      !['running', 'paused', 'manual', 'complete', 'tutorial'].includes(snapshot.status)) {
     throw Error('Invalid table snapshot');
   }
 
@@ -42,6 +59,7 @@ export function validateSnapshot(snapshot) {
     scores: { human: Number(snapshot.scores.human), buddy: Number(snapshot.scores.buddy) },
     hand, legalActions, previews, status: snapshot.status, lastAction,
     winner: ['human', 'buddy', 'draw'].includes(snapshot.winner) ? snapshot.winner : null,
+    ...(snapshot.status === 'tutorial' && { tutorial: validTutorial(snapshot.tutorial) }),
   };
 }
 
@@ -71,7 +89,7 @@ export function publicDescription(snapshot) {
   return action ? `${action.seat === 'buddy' ? 'Buddy' : 'Human'} played ${action.card}.${action.effect ? ' ' + action.effect : ''}` : '';
 }
 
-async function generateOllama(baseUrl, timeoutMs, body) {
+export async function generateOllama(baseUrl, timeoutMs, body) {
   const response = await fetch(`${baseUrl}/api/generate`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -127,8 +145,8 @@ export async function chooseOllama(snapshot, {
   return parseModelChoice(data.response, snapshot);
 }
 
-export async function chooseChatModel(snapshot, { model, baseUrl, key, timeoutMs = 30000, structured }) {
-  const { prompt, schema } = modelTurn(snapshot);
+// One OpenAI-style chat completion against a local server (LM Studio or Unsloth Studio).
+export async function chatComplete({ model, baseUrl, key, timeoutMs = 30000, content, schema, name, structured, maxTokens }) {
   const response = await fetch(baseUrl + '/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -139,14 +157,23 @@ export async function chooseChatModel(snapshot, { model, baseUrl, key, timeoutMs
     redirect: 'error',
     body: JSON.stringify({
       model,
-      messages: [{ role: 'user', content: prompt + '\nUse the exact format {"choice":"<letter>"}, replacing <letter> with your chosen option.' }],
+      messages: [{ role: 'user', content }],
       temperature: 0,
-      max_tokens: 96,
+      max_tokens: maxTokens,
       stream: false,
-      ...(structured && { response_format: { type: 'json_schema', json_schema: { name: 'signal_run_turn', strict: true, schema } } }),
+      ...(structured && { response_format: { type: 'json_schema', json_schema: { name, strict: true, schema } } }),
     }),
   });
   if (!response.ok) throw Object.assign(Error('Local model unavailable'), { status: response.status });
   const data = await response.json();
-  return parseModelChoice(data.choices?.[0]?.message?.content, snapshot);
+  return data.choices?.[0]?.message?.content;
+}
+
+export async function chooseChatModel(snapshot, { model, baseUrl, key, timeoutMs = 30000, structured }) {
+  const { prompt, schema } = modelTurn(snapshot);
+  const content = await chatComplete({
+    model, baseUrl, key, timeoutMs, schema, structured, name: 'signal_run_turn', maxTokens: 96,
+    content: prompt + '\nUse the exact format {"choice":"<letter>"}, replacing <letter> with your chosen option.',
+  });
+  return parseModelChoice(content, snapshot);
 }

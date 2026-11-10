@@ -8,6 +8,7 @@ import { defaultModel, selectLocalPlayer } from './local-models.js';
 import { Session } from './session.js';
 import { chooseBaseline, chooseOllama, preloadOllama, publicDescription } from './player.js';
 import { startLoadingBar } from './startup-progress.js';
+import { explainOllama } from './tutor.js';
 
 const baseline = process.argv.includes('--baseline');
 const local = process.argv.includes('--local');
@@ -29,9 +30,12 @@ try {
 
 let label = 'deterministic';
 let choose = async snapshot => chooseBaseline(snapshot);
+// The baseline has no model, so in tutorial mode the table just shows the lesson text.
+let explain;
 if (!baseline && model) {
   label = 'local model ' + model;
   choose = snapshot => chooseOllama(snapshot, { model, baseUrl });
+  explain = step => explainOllama(step, { model, baseUrl });
   if (local) {
     console.log('Loading ' + model + ' in Ollama. This can take up to two minutes.');
     const stopProgress = startLoadingBar(process.stdout);
@@ -71,6 +75,7 @@ if (!baseline && model) {
   }
   label = player.label;
   choose = player.choose;
+  explain = player.explain;
 }
 
 let lastRevision = '';
@@ -79,6 +84,11 @@ const session = new Session(bridge, choose, snapshot => {
   const revisionKey = `${snapshot.matchId}:${snapshot.revision}`;
   if (revisionKey === lastRevision) return;
   lastRevision = revisionKey;
+  if (snapshot.status === 'tutorial') {
+    const { step, total, title } = snapshot.tutorial;
+    console.log(`Tutorial step ${step} of ${total}: ${title}`);
+    return;
+  }
   if (snapshot.phase !== 'setup' && !historyError) {
     try {
       appendFileSync('tts-buddy-history.jsonl', JSON.stringify(historyRecord(snapshot)) + '\n', 'utf8');
@@ -93,7 +103,7 @@ const session = new Session(bridge, choose, snapshot => {
   console.log(`Score Human ${snapshot.scores.human} — Buddy ${snapshot.scores.buddy}; ${status}`);
   const action = publicDescription(snapshot);
   if (action) console.log(action);
-});
+}, { explain });
 
 let stopped = false;
 const input = createInterface({ input: process.stdin, output: process.stdout });

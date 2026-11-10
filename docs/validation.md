@@ -89,6 +89,23 @@ Two builds produced the same archive SHA-256 `987D1148B4E57FF58F2C7A85EA0E5237B4
 
 On 10 November 2026 the loaded Signal Run table reported a Global Lua error during onLoad and showed no New match button. Loading a fresh Signal Run save in an existing test slot brought back the center panel and New match button with White already seated. The player then reported that the game worked and Buddy responded quickly. The playtest yielded qualitative feedback. A full match result and timings for this run were not captured. The cause of the earlier load error remains unverified.
 
+## Tutorial mode and Flamme Rouge rules
+
+These are automated checks only, run on 10 November 2026 on branch `feature/flamme-rouge`. `npm test` passed all 35 Node tests and every Lua suite:
+- the tutorial runner;
+- the Signal Run and Flamme Rouge lessons, walked through end to end with each practice check;
+- the Signal Run table in tutorial mode: only White can start or advance it, Buddy can't play during it, practice runs through the hand buttons, Buddy's notes are escaped and only accepted for the current step, and the tutorial is saved with the table;
+- the Flamme Rouge rules, with 20 seeded races.
+
+The Node tests cover tutorial snapshot validation, the grounded tutor prompt, the rejection of notes with unknown numbers, one explanation per step without playing or pausing, and a selected LM Studio player explaining a step.
+
+Not yet checked live:
+- The rebuilt Signal Run save with the **Tutorial** button hasn't been loaded in Tabletop Simulator, so its panel layout is untested. It no longer matches the save checksums recorded above.
+- No model-written tutorial note has been seen at a real table.
+- The Flamme Rouge rules aren't connected to any table yet.
+
+The launcher tests need `NoDefaultCurrentDirectoryInExePath` unset in shells that set it (see [CONTRIBUTING](../CONTRIBUTING.md#troubleshooting-the-tests)).
+
 ## Outstanding gates
 
 - Ask independent testers whether they would play again.
