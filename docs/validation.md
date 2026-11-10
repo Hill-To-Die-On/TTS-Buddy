@@ -89,6 +89,25 @@ Two builds produced the same archive SHA-256 `987D1148B4E57FF58F2C7A85EA0E5237B4
 
 On 10 November 2026 the loaded Signal Run table reported a Global Lua error during onLoad and showed no New match button. Loading a fresh Signal Run save in an existing test slot brought back the center panel and New match button with White already seated. The player then reported that the game worked and Buddy responded quickly. The playtest yielded qualitative feedback. A full match result and timings for this run were not captured. The cause of the earlier load error remains unverified.
 
+## Tutorial mode and Flamme Rouge rules
+
+These are automated checks only, run on 10 November 2026 on branch `feature/flamme-rouge`. `npm test` passed all 35 Node tests and every Lua suite:
+- the tutorial runner;
+- the Signal Run and Flamme Rouge lessons, walked through end to end with each practice check;
+- the Signal Run table in tutorial mode: only White can start or advance it, Buddy can't play during it, practice runs through the hand buttons, Buddy's notes are escaped and only accepted for the current step, and the tutorial is saved with the table;
+- the Flamme Rouge rules, with 20 seeded races.
+
+The Node tests cover tutorial snapshot validation, the grounded tutor prompt, the rejection of notes with unknown numbers, one explanation per step without playing or pausing, and a selected LM Studio player explaining a step.
+
+**Personal playtest, 10 November 2026.** The rebuilt save (SHA-256 starting `12481e2a713d2693`) was installed in slot 25 on the development PC, with Ollama serving `qwen3:4b-instruct-2507-q4_K_M`. The developer played through the Signal Run tutorial in Tabletop Simulator and reported that it was good. No problems were reported. This is personal feedback, not an independent playtest, and no step-by-step record was kept.
+
+Not yet checked live:
+- Whether Buddy's model-written note appeared under each tutorial step wasn't recorded in that playtest.
+- The rebuilt save no longer matches the save checksums recorded above, so the earlier match and recovery evidence applies to the older save.
+- The Flamme Rouge rules aren't connected to any table yet.
+
+The launcher tests need `NoDefaultCurrentDirectoryInExePath` unset in shells that set it (see [CONTRIBUTING](../CONTRIBUTING.md#troubleshooting-the-tests)).
+
 ## Outstanding gates
 
 - Ask independent testers whether they would play again.

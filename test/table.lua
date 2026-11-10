@@ -1,4 +1,5 @@
-UI={setXml=function(xml) assert(type(xml)=='string') end}
+local lastXml
+UI={setXml=function(xml) assert(type(xml)=='string'); lastXml=xml end}
 local sent,encoded
 JSON={decode=function() return {} end,encode=function(value) encoded=value; return '{}' end}
 function sendExternalMessage(m)
@@ -42,3 +43,32 @@ for i=1,#a.hand do assert(a.hand[i].card==b.hand[i].card and a.legalActions[i]==
 assert(a.humanHand==nil and a.deck==nil)
 onExternalMessage({protocol=1,type='play',requestId='guess',matchId=b.matchId,revision=b.revision,actionId='abc123'}); assert(sent.result=='rejected' and sent.revision==b.revision)
 print('Paired hidden state and guessed ID checks passed')
+-- Tutorial mode: White starts it, Buddy can't play during it and practice goes through the hand buttons.
+local function tutorialView() onExternalMessage({protocol=1,type='inspect',requestId='tutorial-inspect'}); return sent.snapshot end
+local blue={color='Blue'}
+startTutorial(blue); assert(tutorialView().status~='tutorial','only White can start the tutorial')
+resumeGame(white); startTutorial(white)
+local tv=tutorialView()
+assert(tv.status=='tutorial' and tv.phase=='setup' and #tv.legalActions==0 and #tv.hand==0)
+assert(tv.tutorial.stepId=='goal' and tv.tutorial.step==1 and tv.tutorial.total==8 and tv.tutorial.game=='signal-run')
+assert(type(tv.tutorial.id)=='string' and tv.tutorial.text:find('7 points',1,true))
+assert(lastXml:find('Tutorial 1 of 8',1,true),'the panel shows the step')
+onExternalMessage({protocol=1,type='play',requestId='tutorial-play',matchId=b.matchId,revision=b.revision,actionId=b.legalActions[1]})
+assert(sent.result=='rejected','Buddy cannot play while the tutorial is open')
+onExternalMessage({protocol=1,type='teach',requestId='teach-1',stepId='boost',text='Too early'}); assert(sent.result=='rejected')
+onExternalMessage({protocol=1,type='teach',requestId='teach-2',stepId='goal',text='<b>Race</b> & "win"'}); assert(sent.result=='applied')
+assert(tutorialView().tutorial.note=='<b>Race</b> & "win"')
+assert(lastXml:find('&lt;b&gt;Race&lt;/b&gt; &amp; &quot;win&quot;',1,true) and not lastXml:find('<b>',1,true),'notes are escaped')
+tutorialNext(blue); assert(tutorialView().tutorial.stepId=='goal','only White moves the tutorial on')
+tutorialNext(white); tutorialNext(white)
+assert(tutorialView().tutorial.stepId=='charge')
+tutorialNext(white); assert(tutorialView().tutorial.stepId=='charge','practise before moving on')
+assert(lastXml:find('onClick="playHuman"',1,true),'the practice hand is shown')
+playHuman(white,nil,'1'); assert(tutorialView().tutorial.practiceDone)
+tutorialNext(white); assert(tutorialView().tutorial.stepId=='boost')
+playHuman(white,nil,'1'); tv=tutorialView().tutorial; assert(not tv.practiceDone and tv.feedback:find('Boost would have won',1,true))
+playHuman(white,nil,'2'); assert(tutorialView().tutorial.practiceDone)
+onSave(); assert(encoded.tutorial and encoded.tutorial.step==4,'the tutorial is saved with the table')
+leaveTutorial(white); tv=tutorialView()
+assert(tv.status=='paused' and tv.matchId==b.matchId,'leaving returns to the paused match')
+print('Signal Run tutorial table tests passed')

@@ -19,6 +19,8 @@ test('table build emits the same files from LF and CRLF Lua sources', (t) => {
 
   const sources = {
     'rules.lua': 'local rules = {}\n',
+    'tutorial.lua': 'local tutorial = {}\n',
+    'signal-run-tutorial.lua': 'local lessons = {}\n',
     'presentation.lua': 'local presentation = {}\n',
     'table.lua': 'local tableState = {}\n',
   };

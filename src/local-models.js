@@ -1,5 +1,9 @@
 import { spawn } from 'node:child_process';
 import { chooseChatModel, chooseOllama } from './player.js';
+import { explainChat, explainOllama } from './tutor.js';
+
+// A prepared player chooses moves and can also explain tutorial steps with the same model.
+const withExplain = (choose, explain) => Object.assign(choose, { explain });
 
 const ollama = 'http://127.0.0.1:11434';
 const lmStudio = 'http://127.0.0.1:1234';
@@ -71,7 +75,10 @@ function ollamaCandidate(model, size) {
     label: 'Ollama ' + model,
     priority: model === defaultModel ? 0 : 3,
     size,
-    prepare: async () => (snapshot, timeoutMs) => chooseOllama(snapshot, { model, timeoutMs, contextLength }),
+    prepare: async () => withExplain(
+      (snapshot, timeoutMs) => chooseOllama(snapshot, { model, timeoutMs, contextLength }),
+      step => explainOllama(step, { model, contextLength }),
+    ),
   };
 }
 
@@ -90,9 +97,10 @@ function lmCandidate(model, key) {
         if (loaded.status !== 'loaded' || !loaded.instance_id) throw Error('model did not load');
         id = loaded.instance_id;
       }
-      return (snapshot, timeoutMs) => chooseChatModel(snapshot, {
-        model: id, baseUrl: lmStudio, key, timeoutMs, structured: true,
-      });
+      return withExplain(
+        (snapshot, timeoutMs) => chooseChatModel(snapshot, { model: id, baseUrl: lmStudio, key, timeoutMs, structured: true }),
+        step => explainChat(step, { model: id, baseUrl: lmStudio, key, structured: true }),
+      );
     },
   };
 }
@@ -140,9 +148,10 @@ export async function selectLocalPlayer({
       label: 'Unsloth Studio ' + model.id,
       priority: 2,
       size: 0,
-      prepare: async () => (snapshot, timeoutMs) => chooseChatModel(snapshot, {
-        model: model.id, baseUrl: unsloth, key: unslothKey, timeoutMs,
-      }),
+      prepare: async () => withExplain(
+        (snapshot, timeoutMs) => chooseChatModel(snapshot, { model: model.id, baseUrl: unsloth, key: unslothKey, timeoutMs }),
+        step => explainChat(step, { model: model.id, baseUrl: unsloth, key: unslothKey }),
+      ),
     });
   }
 
@@ -153,7 +162,7 @@ export async function selectLocalPlayer({
     try {
       const choose = await candidate.prepare();
       if (await choose(probe, probeTimeout) !== '1:2') throw Error('missed the winning move');
-      return { label: candidate.label, choose: snapshot => choose(snapshot) };
+      return { label: candidate.label, choose: snapshot => choose(snapshot), explain: choose.explain };
     } catch (error) {
       failure = problem(error);
     } finally {
