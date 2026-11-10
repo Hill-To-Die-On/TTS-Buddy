@@ -14,6 +14,7 @@ The Windows launcher checks running local model servers. It tries `qwen3:4b-inst
 
 ## Decisions
 
+- 2026-11-10 · The public GitHub repository (`Hill-To-Die-On/TTS-Buddy`) has a README, CHANGELOG, CONTRIBUTING guide, SECURITY policy and issue and pull request templates. No licence has been chosen, so the code is all rights reserved by default. Private vulnerability reporting is off, so SECURITY.md asks reporters to open a detail-free issue and get a private contact.
 - 2026-11-10 · Choose Flamme Rouge as the next head-to-head adapter. Start with one base-game race on Avenue Corso Paseo in local Singleplayer. [Scope and acceptance](../../docs/flamme-rouge.md)
 
 - 2026-11-09 · The feasibility plan calls for testing subscription-based desktop control where available and using a direct scripting bridge for structured interaction. The first test uses the existing TTS session.
