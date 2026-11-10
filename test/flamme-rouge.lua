@@ -112,12 +112,17 @@ print('Flamme Rouge slipstream and exhaustion tests passed')
 local f=staged{['buddy-S']={23,1},['human-R']={22,1},['buddy-R']={21,1},['human-S']={20,1}}
 f.committed={['buddy-S']=3,['human-R']=5,['buddy-R']=9,['human-S']=2}
 FR.resolveRound(f)
-eq(f.phase,'finished'); eq(f.winner,'buddy'); eq(at(f,'buddy-R'),30,'stops at the end of the track')
+eq(f.phase,'finished'); eq(f.winner,'buddy'); eq(at(f,'buddy-R'),30,'reaches the last square')
 same(f.finishOrder,{'buddy-R','human-R','buddy-S','human-S'})
 assert(not FR.draw(f,'human','R'),'no actions after the finish')
 local tie=staged{['human-R']={20,1},['buddy-R']={18,1},['human-S']={2,1},['buddy-S']={1,1}}
 tie.committed={['human-R']=7,['buddy-R']=9,['human-S']=2,['buddy-S']=2}
 FR.resolveRound(tie); eq(tie.winner,'human','right lane wins a tie on the same square')
+local beyond=staged({['human-R']={72,1},['buddy-S']={71,1},['human-S']={2,1},['buddy-R']={1,1}},FR.avenueCorsoPaseo().track)
+beyond.committed={['human-R']=7,['buddy-S']=9,['human-S']=2,['buddy-R']=2}
+FR.resolveRound(beyond)
+eq(at(beyond,'human-R'),79,'distance past the last square still counts'); eq(at(beyond,'buddy-S'),80)
+eq(beyond.winner,'buddy','furthest across wins even past the end of the track')
 print('Flamme Rouge finish tests passed')
 
 -- Mountains: ascents cap at 5 and stop slipstreaming, descents give at least 5.
@@ -127,6 +132,9 @@ eq(FR.effectiveMove(hill,12,7),5,'starting on an ascent'); eq(FR.effectiveMove(h
 eq(FR.effectiveMove(hill,1,4),4)
 local climb=staged({['human-R']={12,1},['buddy-R']={14,1}},hill)
 FR.slipstream(climb); eq(at(climb,'human-R'),12,'no slipstream on an ascent')
+local summit=FR.track{length=40,startArea=4,finishLine=35,ascent={11}}
+local lead=staged({['human-R']={8,1},['buddy-R']={10,1},['buddy-S']={11,1}},summit)
+FR.slipstream(lead); eq(at(lead,'human-R'),8,'a leading pack with anyone on an ascent gives no slipstream')
 print('Flamme Rouge mountain tests passed')
 
 -- The introductory course: tiles a to u in order, lower-case sides.

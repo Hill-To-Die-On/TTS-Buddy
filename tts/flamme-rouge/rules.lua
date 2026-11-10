@@ -137,10 +137,12 @@ function FR.effectiveMove(t, pos, value)
   return value
 end
 
+-- Movement isn't clamped at the last square: only the finishing round can reach past it, and the full
+-- distance decides who got furthest across the line.
 local function moveRider(s, id, value)
   local r = s.riders[id]
   local from = r.pos
-  local target = math.min(from+FR.effectiveMove(s.track, from, value), s.track.length)
+  local target = from+FR.effectiveMove(s.track, from, value)
   r.pos = -1
   for sq=target,from,-1 do if free(s, sq) then settle(s, id, sq); return end end
   settle(s, id, from)
@@ -159,7 +161,7 @@ function FR.slipstream(s)
   local i = 1
   while i<#packs do
     local p, q = packs[i], packs[i+1]
-    if q.first-p.last==2 and not climbing(p) and s.track.terrain[q.first]~='ascent' then
+    if q.first-p.last==2 and not climbing(p) and not climbing(q) then
       for _,r in pairs(s.riders) do if r.pos>=p.first and r.pos<=p.last then r.pos=r.pos+1 end end
       q.first = p.first+1; table.remove(packs, i)
     else i = i+1 end

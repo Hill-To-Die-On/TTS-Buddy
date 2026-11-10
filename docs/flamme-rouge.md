@@ -39,7 +39,8 @@ Updated 10 November 2026.
 
 Two rulings the rulebook leaves open:
 - A rider with no cards left at all plays an exhaustion card, so the race can continue.
-- A pack with any rider on an ascent neither gives nor gets slipstream. This doesn't matter on the flat introductory course.
+- A pack with any rider on an ascent neither gives nor gets slipstream, whether it's the pack behind the gap or the one in front. This doesn't matter on the flat introductory course.
+- A finishing move isn't stopped at the last square of the track. The full distance counts, so a rider who would have gone further across the line still finishes ahead.
 
 **Tutorial lessons.** `tts/flamme-rouge/tutorial.lua` has eight lessons, with practice steps for choosing energy and catching a slipstream. See [tutorial mode](tutorial.md).
 
