@@ -1,0 +1,21 @@
+name: Idea or game request
+description: Suggest a feature, an improvement or a game for Buddy to learn.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like?
+      description: Describe the idea, or the game you'd like Buddy to play.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why would it help?
+      description: What's awkward or missing at the table today? For a game, what makes it interesting for an AI player (hidden hands, simultaneous choices, line of sight, co-op, campaigns, etc)?
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything else?
+      description: Links to the official rules, or how you'd imagine it working. Please don't attach rulebook scans or game assets.

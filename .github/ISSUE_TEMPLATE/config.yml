@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a security problem
+    url: https://github.com/Hill-To-Die-On/TTS-Buddy/blob/main/SECURITY.md
+    about: Please read the security policy rather than opening a public issue.
+  - name: Setting up Buddy
+    url: https://github.com/Hill-To-Die-On/TTS-Buddy/blob/main/docs/quick-start.md
+    about: The quick start covers installing the save, local models and troubleshooting.

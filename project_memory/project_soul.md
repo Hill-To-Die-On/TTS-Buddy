@@ -20,7 +20,7 @@ Let a player sit down with an AI opponent or teammate that follows the rules, ta
 ## Key Decisions
 
 - Start with the existing local TTS session. Test ChatGPT desktop control and a direct scripting bridge.
-- The Git repository uses `main` as its default branch and also has a `dev` branch.
+- The Git repository uses `main` as its default branch and `dev` for day-to-day work. Pull requests target `dev`, and `main` moves forward when `dev` is promoted.
 - The proposed MVP scope and milestone gates live in the canonical roadmap.
 
 ## Maintained Pages
